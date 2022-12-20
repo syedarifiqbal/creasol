@@ -7,7 +7,7 @@ import "app-assets/css/app.css";
 import "app-assets/css/plugins/menu/vertical-menu.css";
 import "assets/css/style.css";
 import "assets/fonts/stylesheet.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MainLayout from "./Layout/MainLayout/MainLayout";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Users from "./Pages/Users/Users";
