@@ -1,13 +1,17 @@
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import MainHeader from "./MainHeader";
 import Sidebar from "./Sidebar";
 const MainLayout = () => {
+  useEffect(() => {
+    console.log("Main effect called");
+  }, []);
   return (
     <>
       <MainHeader />
-      <div class="app-content content">
+      <div className="app-content content">
         <Sidebar />
-        <div class="content-wrapper">
+        <div className="content-wrapper">
           <Outlet />
         </div>
       </div>
