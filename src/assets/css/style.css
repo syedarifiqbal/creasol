@@ -305,7 +305,7 @@ Button Delete
   li.dropdown-notification
   .dropdown-menu
   .media-list {
-  max-height: 16rem;
+  height: 16rem;
 }
 
 .dropdown-notification .media-left {
@@ -1824,4 +1824,13 @@ table.dataTable {
 }
 .login-card form button.view-btn:hover svg {
   fill: #b3b3b3;
+}
+.dropdown-notification .dropdown-item {
+  padding: 0;
+}
+.dropdown-notification .dropdown-item {
+  background: transparent;
+}
+.dropdown-notification .dropdown-toggle::after {
+  display: none;
 }

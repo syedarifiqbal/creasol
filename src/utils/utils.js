@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 const addScript = (path) => {
   const script = document.createElement("script");
   script.src = path;
@@ -5,4 +7,13 @@ const addScript = (path) => {
   document.body.appendChild(script);
 };
 
-export default { addScript };
+const initializePerfectScrollbar = (selector = ".scrollable-container") => {
+  debugger;
+  //  Notifications & messages scrollable
+  if ($(selector).length > 0) {
+    $(selector).perfectScrollbar({
+      theme: "dark",
+    });
+  }
+};
+export default { addScript, initializePerfectScrollbar };

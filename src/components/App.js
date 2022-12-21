@@ -3,14 +3,20 @@ import Login from "./AuthScreens/Login";
 import PasswordRecovery from "./AuthScreens/PasswordRecovery";
 import AuthLayout from "./Layout/AuthLayout";
 
-import "app-assets/css/app.css";
-import "app-assets/css/plugins/menu/vertical-menu.css";
-import "assets/css/style.css";
-import "assets/fonts/stylesheet.css";
 import { useState } from "react";
 import MainLayout from "./Layout/MainLayout/MainLayout";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Users from "./Pages/Users/Users";
+
+import "app-assets/css/app.css";
+import "app-assets/css/plugins/menu/vertical-menu.css";
+import "assets/css/style.css";
+import "assets/fonts/stylesheet.css";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import Packages from "./Pages/Packages/Packages";
+import Orders from "./Pages/Orders/Orders";
+import PaymentLog from "./Pages/PaymentLog/PaymentLog";
+import ContactAdmin from "./Pages/ContactAdmin/ContactAdmin";
 
 function App() {
   const [isloggedIn, setIsloggedIn] = useState(true);
@@ -30,6 +36,22 @@ function App() {
           <Route
             path="/users"
             element={!isloggedIn ? <Navigate to="/" /> : <Users />}
+          />
+          <Route
+            path="/packages"
+            element={!isloggedIn ? <Navigate to="/" /> : <Packages />}
+          />
+          <Route
+            path="/orders"
+            element={!isloggedIn ? <Navigate to="/" /> : <Orders />}
+          />
+          <Route
+            path="/payment-log"
+            element={!isloggedIn ? <Navigate to="/" /> : <PaymentLog />}
+          />
+          <Route
+            path="/customer-feedback"
+            element={!isloggedIn ? <Navigate to="/" /> : <ContactAdmin />}
           />
         </Route>
       </Routes>

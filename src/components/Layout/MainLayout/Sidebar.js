@@ -4,9 +4,17 @@ import PackagesIcon from "assets/images/nav-icon-3.png";
 import OrderIcon from "assets/images/nav-icon-4.png";
 import PaymentLogIcon from "assets/images/nav-icon-5.png";
 import ContactAdminIcon from "assets/images/nav-icon-6.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
+  //assigning location variable
+  const location = useLocation();
+
+  //destructuring pathname from location
+  const { pathname } = location;
+
+  //Javascript split method to get the name of the path in array
+  const pageName = pathname.split("/")[1];
   return (
     <div id="sidebar-wrapper">
       <div
@@ -19,41 +27,51 @@ const Sidebar = () => {
             id="main-menu-navigation"
             data-menu="menu-navigation"
           >
-            <li className="nav-item active">
+            <li className={`nav-item ${pageName === "" ? "active" : ""}`}>
               <Link to="/" className="mm-next">
                 <img src={DashboardIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Dashboard</span>
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/users">
+            <li className={`nav-item ${pageName === "users" ? "active" : ""}`}>
+              <Link to="users">
                 <img src={UsersIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Users</span>
               </Link>
             </li>
-            <li className="nav-item">
-              <a href="packages.php" className="mm-next">
+            <li
+              className={`nav-item ${pageName === "packages" ? "active" : ""}`}
+            >
+              <Link to="packages" className="mm-next">
                 <img src={PackagesIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Packages</span>
-              </a>
+              </Link>
             </li>
-            <li className="nav-item">
-              <a href="order.php" className="mm-next">
+            <li className={`nav-item ${pageName === "orders" ? "active" : ""}`}>
+              <Link to="orders" className="mm-next">
                 <img src={OrderIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Order</span>
-              </a>
+              </Link>
             </li>
-            <li className="nav-item">
-              <a href="payment-log.php" className="mm-next">
+            <li
+              className={`nav-item ${
+                pageName === "payment-log" ? "active" : ""
+              }`}
+            >
+              <Link to="payment-log" className="mm-next">
                 <img src={PaymentLogIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Payment Log</span>
-              </a>
+              </Link>
             </li>
-            <li className="nav-item">
-              <a href="customer-feedback.php" className="mm-next">
+            <li
+              className={`nav-item ${
+                pageName === "customer-feedback" ? "active" : ""
+              }`}
+            >
+              <Link to="customer-feedback" className="mm-next">
                 <img src={ContactAdminIcon} alt="" className="img-fluid me-2" />
                 <span className="menu-title">Contact Admin</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
