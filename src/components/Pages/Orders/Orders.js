@@ -2,24 +2,24 @@ import React from "react";
 
 const Orders = () => {
   return (
-    <section id="user_page" class="user-page">
-      <div class="content-body">
-        <div class="page-title mb-4">
-          <div class="row">
-            <div class="col-12">
+    <section id="user_page" className="user-page">
+      <div className="content-body">
+        <div className="page-title mb-4">
+          <div className="row">
+            <div className="col-12">
               <h2>Order Listing</h2>
             </div>
           </div>
         </div>
-        <div class="dataTables_wrapper">
-          <div class="user-listing-top">
-            <div class="row align-items-end d-flex mb-3">
-              <div class="col-12">
-                <div class="dataTables_filter d-flex justify-content-start flex-shrink-1">
-                  <div class="search-wrap flex-grow-1">
+        <div className="dataTables_wrapper">
+          <div className="user-listing-top">
+            <div className="row align-items-end d-flex mb-3">
+              <div className="col-12">
+                <div className="dataTables_filter d-flex justify-content-start flex-shrink-1">
+                  <div className="search-wrap flex-grow-1">
                     <input
                       type="search"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Search"
                     />
                   </div>
@@ -27,18 +27,18 @@ const Orders = () => {
               </div>
             </div>
           </div>
-          <div class="main-tabble table-responsive mx-n2">
-            <table class="table table-borderless dataTable px-2">
+          <div className="main-tabble table-responsive mx-n2">
+            <table className="table table-borderless dataTable px-2">
               <thead>
                 <tr>
-                  <th class="sorting">Order ID</th>
-                  <th class="sorting">Name</th>
-                  <th class="sorting">Phone #</th>
-                  <th class="sorting">Payment Type</th>
-                  <th class="sorting">Package</th>
-                  <th class="sorting">Medium</th>
-                  <th class="sorting">Form Status</th>
-                  <th class="sorting">Action</th>
+                  <th className="sorting">Order ID</th>
+                  <th className="sorting">Name</th>
+                  <th className="sorting">Phone #</th>
+                  <th className="sorting">Payment Type</th>
+                  <th className="sorting">Package</th>
+                  <th className="sorting">Medium</th>
+                  <th className="sorting">Form Status</th>
+                  <th className="sorting">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -52,7 +52,7 @@ const Orders = () => {
                   <td>Submitted</td>
                   <td>
                     <a href="order-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -64,11 +64,11 @@ const Orders = () => {
                   <td>Package B</td>
                   <td>Instagram</td>
                   <td>
-                    Not Submitted <span class="text-green">(View)</span>
+                    Not Submitted <span className="text-green">(View)</span>
                   </td>
                   <td>
                     <a href="order-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -82,7 +82,7 @@ const Orders = () => {
                   <td>Submitted</td>
                   <td>
                     <a href="order-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -94,11 +94,11 @@ const Orders = () => {
                   <td>Package B</td>
                   <td>Instagram</td>
                   <td>
-                    Not Submitted <span class="text-green">(View)</span>
+                    Not Submitted <span className="text-green">(View)</span>
                   </td>
                   <td>
                     <a href="order-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -112,7 +112,7 @@ const Orders = () => {
                   <td>Submitted</td>
                   <td>
                     <a href="order-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>

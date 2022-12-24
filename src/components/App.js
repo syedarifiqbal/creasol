@@ -10,16 +10,19 @@ import Users from "./Pages/Users/Users";
 
 import "app-assets/css/app.css";
 import "app-assets/css/plugins/menu/vertical-menu.css";
-import "assets/css/style.css";
 import "assets/fonts/stylesheet.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
+// import "react-toastify/dist/ReactToastify.css";
+import "assets/css/style.css";
+
 import Packages from "./Pages/Packages/Packages";
 import Orders from "./Pages/Orders/Orders";
 import PaymentLog from "./Pages/PaymentLog/PaymentLog";
 import ContactAdmin from "./Pages/ContactAdmin/ContactAdmin";
+import Register from "./AuthScreens/Register";
 
 function App() {
-  const [isloggedIn, setIsloggedIn] = useState(true);
+  const [isloggedIn, setIsloggedIn] = useState(false);
 
   return (
     <>
@@ -29,10 +32,17 @@ function App() {
             index
             element={!isloggedIn ? <Login /> : <Dashboard />}
           ></Route>
+          {/* AuthLayout Screens */}
           <Route
             path="/password-recovery"
             element={!isloggedIn ? <PasswordRecovery /> : <Navigate to="/" />}
           />
+          <Route
+            path="/register"
+            element={!isloggedIn ? <Register /> : <Navigate to="/" />}
+          />
+          {/* AuthLayout Screens End */}
+          {/* MainLayout Screens */}
           <Route
             path="/users"
             element={!isloggedIn ? <Navigate to="/" /> : <Users />}
@@ -53,6 +63,7 @@ function App() {
             path="/customer-feedback"
             element={!isloggedIn ? <Navigate to="/" /> : <ContactAdmin />}
           />
+          {/* MainLayout Screens */}
         </Route>
       </Routes>
     </>

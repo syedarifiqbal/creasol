@@ -5,58 +5,58 @@ import Chart from "assets/images/chart.png";
 
 const PaymentLog = () => {
   return (
-    <section id="configuration" class="dashboard">
-      <div class="row">
-        <div class="col-12">
-          <div class="content-body">
-            <div class="page-title mb-0">
-              <div class="row align-items-center mb-4">
-                <div class="col-lg-7">
-                  <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="mb-0">Payment Log</h2>
+    <section id="configuration" className="dashboard">
+      <div className="row">
+        <div className="col-12">
+          <div className="content-body">
+            <div className="page-title mb-0">
+              <div className="row align-items-center mb-4">
+                <div className="col-lg-7">
+                  <div className="d-flex align-items-center justify-content-between mb-4">
+                    <h2 className="mb-0">Payment Log</h2>
                     <div>
-                      <h6 href="#" class="fs-16 text-dark ff-helve fw-bold">
+                      <h6 href="#" className="fs-16 text-dark ff-helve fw-bold">
                         Legends:
                       </h6>
-                      <div class="d-flex align-items-center">
-                        <div class="me-3">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
                           <img
                             src={DotOne}
                             alt=""
-                            class="img-fluid d-inline-block me-2"
+                            className="img-fluid d-inline-block me-2"
                           />
-                          <h6 class="fs-16 fw-medium text-dark ff-helve d-inline-block">
+                          <h6 className="fs-16 fw-medium text-dark ff-helve d-inline-block">
                             Approved
                           </h6>
                         </div>
-                        <div class="me-3">
+                        <div className="me-3">
                           <img
                             src={DotTwo}
                             alt=""
-                            class="img-fluid d-inline-block me-2"
+                            className="img-fluid d-inline-block me-2"
                           />
-                          <h6 class="fs-16 fw-medium text-dark ff-helve d-inline-block">
+                          <h6 className="fs-16 fw-medium text-dark ff-helve d-inline-block">
                             Pending
                           </h6>
                         </div>
-                        <div class="me-3">
+                        <div className="me-3">
                           <img
                             src={DotThree}
                             alt=""
-                            class="img-fluid d-inline-block me-2"
+                            className="img-fluid d-inline-block me-2"
                           />
-                          <h6 class="fs-16 fw-medium text-dark ff-helve d-inline-block">
+                          <h6 className="fs-16 fw-medium text-dark ff-helve d-inline-block">
                             Rejected
                           </h6>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="d-block d-sm-flex align-items-center justify-content-between mb-4">
-                    <h3 class="mb-sm-0 mb-3">Sales Per Month</h3>
-                    <div class="">
-                      <div class="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2">
-                        <select name="" id="" class="form-control">
+                  <div className="d-block d-sm-flex align-items-center justify-content-between mb-4">
+                    <h3 className="mb-sm-0 mb-3">Sales Per Month</h3>
+                    <div className="">
+                      <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2">
+                        <select name="" id="" className="form-control">
                           <option value="">2022</option>
                           <option value="">2021</option>
                           <option value="">2020</option>
@@ -74,17 +74,17 @@ const PaymentLog = () => {
                       </div>
                     </div>
                   </div>
-                  <img src={Chart} alt="" class="img-fluid w-100" />
+                  <img src={Chart} alt="" className="img-fluid w-100" />
                 </div>
-                <div class="col-lg-5">
-                  <div class="paymentLogBox text-center">
-                    <div class="paymentLogHeader">
-                      <h4 class="fs-22 fw-bold ff-helve text-white mb-0">
+                <div className="col-lg-5">
+                  <div className="paymentLogBox text-center">
+                    <div className="paymentLogHeader">
+                      <h4 className="fs-22 fw-bold ff-helve text-white mb-0">
                         Total Sales
                       </h4>
                     </div>
-                    <div class="paymentLogBody">
-                      <h2 class="fs-60 fw-bold ff-helve text-purple mb-0">
+                    <div className="paymentLogBody">
+                      <h2 className="fs-60 fw-bold ff-helve text-purple mb-0">
                         $2,36,000
                       </h2>
                     </div>
@@ -92,9 +92,9 @@ const PaymentLog = () => {
                 </div>
               </div>
             </div>
-            <div class="d-block d-md-flex align-items-center">
-              <div class="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
-                <select name="" id="" class="form-control">
+            <div className="d-block d-md-flex align-items-center">
+              <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
+                <select name="" id="" className="form-control">
                   <option value="">Month</option>
                   <option value="">Jan</option>
                   <option value="">Feb</option>
@@ -110,8 +110,8 @@ const PaymentLog = () => {
                   <option value="">December</option>
                 </select>
               </div>
-              <div class="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0">
-                <select name="" id="" class="form-control">
+              <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0">
+                <select name="" id="" className="form-control">
                   <option value="">Year</option>
                   <option value="">2022</option>
                   <option value="">2021</option>
@@ -128,11 +128,11 @@ const PaymentLog = () => {
                   <option value="">2010</option>
                 </select>
               </div>
-              <span class="px-sm-4 mx-sm-3 py-md-3 py-2 filterTo my-md-0 my-2 d-inline-block">
+              <span className="px-sm-4 mx-sm-3 py-md-3 py-2 filterTo my-md-0 my-2 d-inline-block">
                 To
               </span>
-              <div class="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
-                <select name="" id="" class="form-control">
+              <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
+                <select name="" id="" className="form-control">
                   <option value="">Month</option>
                   <option value="">Jan</option>
                   <option value="">Feb</option>
@@ -148,8 +148,8 @@ const PaymentLog = () => {
                   <option value="">December</option>
                 </select>
               </div>
-              <div class="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
-                <select name="" id="" class="form-control">
+              <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2 mb-md-0 mb-2">
+                <select name="" id="" className="form-control">
                   <option value="">Year</option>
                   <option value="">2022</option>
                   <option value="">2021</option>
@@ -166,23 +166,23 @@ const PaymentLog = () => {
                   <option value="">2010</option>
                 </select>
               </div>
-              <button class="btn btn-secondary bg-green rounded-5">
+              <button className="btn btn-secondary bg-green rounded-5">
                 Filter
               </button>
             </div>
-            <div class="card shadow-none bg-transparent p-0 d-block card-chart border-none align-items-center">
-              <div class="card-header d-block d-sm-flex justify-content-between bg-transparent border-0 p-0 "></div>
-              <div class="card-body p-0">
-                <div class="chartbox position-relative text-center">
-                  <div class="main-tabble table-responsive">
-                    <table class="table table-borderless dataTable">
+            <div className="card shadow-none bg-transparent p-0 d-block card-chart border-none align-items-center">
+              <div className="card-header d-block d-sm-flex justify-content-between bg-transparent border-0 p-0 "></div>
+              <div className="card-body p-0">
+                <div className="chartbox position-relative text-center">
+                  <div className="main-tabble table-responsive">
+                    <table className="table table-borderless dataTable">
                       <thead>
                         <tr>
-                          <th class="sorting">Transaction ID</th>
-                          <th class="sorting">Order ID</th>
-                          <th class="sorting">Email</th>
-                          <th class="sorting">Payment Type</th>
-                          <th class="sorting">Amount</th>
+                          <th className="sorting">Transaction ID</th>
+                          <th className="sorting">Order ID</th>
+                          <th className="sorting">Email</th>
+                          <th className="sorting">Payment Type</th>
+                          <th className="sorting">Amount</th>
                         </tr>
                       </thead>
                       <tbody>

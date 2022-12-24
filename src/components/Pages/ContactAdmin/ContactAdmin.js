@@ -2,25 +2,25 @@ import React from "react";
 
 const ContactAdmin = () => {
   return (
-    <section id="user_page" class="user-page">
-      <div class="content-body">
-        <div class="page-title mb-4">
-          <div class="row">
-            <div class="col-12">
+    <section id="user_page" className="user-page">
+      <div className="content-body">
+        <div className="page-title mb-4">
+          <div className="row">
+            <div className="col-12">
               <h2>Customer Feedback</h2>
             </div>
           </div>
         </div>
-        <div class="dataTables_wrapper">
-          <div class="main-tabble table-responsive mx-n2">
-            <table class="table table-borderless dataTable px-2">
+        <div className="dataTables_wrapper">
+          <div className="main-tabble table-responsive mx-n2">
+            <table className="table table-borderless dataTable px-2">
               <thead>
                 <tr>
-                  <th class="sorting">Feedback ID</th>
-                  <th class="sorting">Date Received</th>
-                  <th class="sorting">Name</th>
-                  <th class="sorting">Email</th>
-                  <th class="sorting">Action</th>
+                  <th className="sorting">Feedback ID</th>
+                  <th className="sorting">Date Received</th>
+                  <th className="sorting">Name</th>
+                  <th className="sorting">Email</th>
+                  <th className="sorting">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -31,7 +31,7 @@ const ContactAdmin = () => {
                   <td>Johnwick@gmail.com</td>
                   <td>
                     <a href="feedback-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -42,7 +42,7 @@ const ContactAdmin = () => {
                   <td>Albersantner@gmail.com</td>
                   <td>
                     <a href="feedback-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -53,7 +53,7 @@ const ContactAdmin = () => {
                   <td>MichealShaun@gmail.com</td>
                   <td>
                     <a href="feedback-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
@@ -64,7 +64,7 @@ const ContactAdmin = () => {
                   <td>JonathanAlen@gmail.com</td>
                   <td>
                     <a href="feedback-detail.php">
-                      <span class="status active">View</span>
+                      <span className="status active">View</span>
                     </a>
                   </td>
                 </tr>
