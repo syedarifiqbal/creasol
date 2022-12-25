@@ -7,10 +7,11 @@ import {
   FaUser,
   FaPhone,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "features/auth/authSlice";
-import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import { toastConstant } from "constants";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,6 +24,9 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState("");
   const dispatch = useDispatch();
   //   const state = useSelector(userSelector);
+  const user = useSelector((state) => state.user);
+
+  const Navigate = useNavigate();
 
   const onRegisterSubmit = (e) => {
     e.preventDefault();
@@ -33,7 +37,14 @@ const Register = () => {
       phone,
       password,
     };
-    console.log(dispatch(registerUser(data)));
+    dispatch(registerUser(data)).then((request) => {
+      toast("👤 User Created!", {
+        ...toastConstant,
+        onClose: () => {
+          Navigate("/");
+        },
+      });
+    });
   };
 
   return (
@@ -146,6 +157,7 @@ const Register = () => {
                 >
                   Register
                 </button>
+                <ToastContainer />
               </div>
               <div className="forgot-pass">
                 <h6 className="ff-helve fs-14 fw-medium text-dark mb-0 d-flex justify-content-end">
@@ -166,7 +178,6 @@ const Register = () => {
             </div>
           </div>
         </form>
-        {/* <ToastContainer /> */}
       </div>
     </div>
   );

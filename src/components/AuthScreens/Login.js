@@ -1,34 +1,17 @@
 import { useState } from "react";
 import { FaRegEnvelope, FaKey, FaEyeSlash, FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { API_PATH } from "constants";
+import { useDispatch } from "react-redux";
+import { loginUser } from "features/auth/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("farazfayyaz2163@gmail.com");
   const [password, setPassword] = useState("123456");
   const [showPassword, setShowPassword] = useState(false);
-
+  const dispatch = useDispatch();
   const onLoginSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post(`${API_PATH}/api/login`, {
-        email,
-        password,
-      })
-      .then(
-        (response) => {
-          console.log(response);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    // const user = await axios.post("/api/login", {
-    //   method: "POST",
-    //   body: JSON.stringify({ email, password }),
-    // });
-    // console.log(user);
+    dispatch(loginUser({ email, password }));
   };
   return (
     <div className="login-card bg-img p-0">
@@ -81,7 +64,7 @@ const Login = () => {
                 </button>
               </div>
               <div className="forgot-pass">
-                <h6 class="ff-helve fs-14 fw-medium text-dark mb-0 d-flex justify-content-end">
+                <h6 className="ff-helve fs-14 fw-medium text-dark mb-0 d-flex justify-content-end">
                   <Link
                     className="ff-helve fs-14 fw-medium text-purple"
                     to="/register"

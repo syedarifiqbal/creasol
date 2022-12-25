@@ -1,6 +1,17 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { client } from "utils/utils";
 
 const Users = () => {
+  const [users, setUsers] = useState(null);
+  // console.log(users);
+  useEffect(() => {
+    client("/api/users?perPage=10").then((res) => {
+      console.log(res);
+      setUsers(res);
+    });
+  }, []);
+
   return (
     <section id="user_page" className="user-page">
       <div className="content-body">
@@ -39,86 +50,34 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>John Smith</td>
-                  <td>johnsmith@gmail.com</td>
-                  <td>+14086752406</td>
-                  <td>
-                    <span className="status active">Active</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="text-purple text-decoration-underline fw-semibold"
-                    >
-                      Click to Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Albert</td>
-                  <td>Albert@gmail.com</td>
-                  <td>+14086752406</td>
-                  <td>
-                    <span className="status active">Active</span>
-                  </td>
-                  <td>
-                    <a
-                      href="user-profile.php"
-                      className="text-purple text-decoration-underline fw-semibold"
-                    >
-                      Click to Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>John Smith</td>
-                  <td>johnsmith@gmail.com</td>
-                  <td>+14086752406</td>
-                  <td>
-                    <span className="status active">Active</span>
-                  </td>
-                  <td>
-                    <a
-                      href="user-profile.php"
-                      className="text-purple text-decoration-underline fw-semibold"
-                    >
-                      Click to Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>John Smith</td>
-                  <td>johnsmith@gmail.com</td>
-                  <td>+14086752406</td>
-                  <td>
-                    <span className="status active">Active</span>
-                  </td>
-                  <td>
-                    <a
-                      href="user-profile.php"
-                      className="text-purple text-decoration-underline fw-semibold"
-                    >
-                      Click to Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Albert</td>
-                  <td>Albert@gmail.com</td>
-                  <td>+14086752406</td>
-                  <td>
-                    <span className="status active">Active</span>
-                  </td>
-                  <td>
-                    <a
-                      href="user-profile.php"
-                      className="text-purple text-decoration-underline fw-semibold"
-                    >
-                      Click to Edit
-                    </a>
-                  </td>
-                </tr>
+                {users !== null ? (
+                  users.data.data.map((user) => (
+                    <tr key={user._id}>
+                      <td>{`${user.first_name} ${user.last_name}`}</td>
+                      <td>{`${user.email}`}</td>
+                      <td>{`${user.phone}`}</td>
+                      <td>
+                        <span className="status active">
+                          {user.status ? "active" : "inactive"}
+                        </span>
+                      </td>
+                      <td>
+                        <Link
+                          to="/users"
+                          className="text-purple text-decoration-underline fw-semibold"
+                        >
+                          Click to Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      Loading...
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

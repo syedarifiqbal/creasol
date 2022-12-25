@@ -1,19 +1,25 @@
-import $ from "jquery";
+import axios from "axios";
+import { API_PATH } from "constants";
 
-const addScript = (path) => {
-  const script = document.createElement("script");
-  script.src = path;
-  script.async = true;
-  document.body.appendChild(script);
-};
+const fetchClient = () => {
+  const defaultOptions = {
+    baseURL: API_PATH,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-const initializePerfectScrollbar = (selector = ".scrollable-container") => {
-  debugger;
-  //  Notifications & messages scrollable
-  if ($(selector).length > 0) {
-    $(selector).perfectScrollbar({
-      theme: "dark",
-    });
-  }
+  // Create instance
+  let instance = axios.create(defaultOptions);
+
+  // Set the AUTH token for any request
+  instance.interceptors.request.use(function (config) {
+    const token = localStorage.getItem("token");
+    config.headers["x-access-token"] = token ? `${token}` : "";
+    return config;
+  });
+
+  return instance;
 };
-export default { addScript, initializePerfectScrollbar };
+export const client = fetchClient();

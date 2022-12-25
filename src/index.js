@@ -5,39 +5,35 @@ import App from "./components/App";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "store";
 import { Provider } from "react-redux";
+import { client } from "utils/utils";
+import { toast } from "react-toastify";
 // import utils from "utils/utils";
 
-async function checkLogin() {
-  // const token = localStorage.getItem("token");
-  // try {
-  //   const res = await fetch("/check-auth", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       token,
-  //     }),
-  //   });
-  // } catch (error) {}
+import "react-toastify/dist/ReactToastify.css";
 
+async function checkLogin() {
   let authUser = null;
 
-  // if (res.ok) {
-  if (true) {
-    // authUser = await res.json();
-    authUser = {};
-  }
+  try {
+    const res = await client.get("/api/profile");
 
-  document.querySelector(".lds-ripple").classList.add("hide");
-
+    const { data, status } = res;
+    if (status === 200) {
+      authUser = data;
+    }
+  } catch (error) {}
   const root = ReactDOM.createRoot(document.getElementById("root"));
-
+  setTimeout(() => {
+    document.querySelector(".loader").classList.remove("show");
+  }, 200);
   root.render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App authUser={authUser} />
-        </BrowserRouter>
-      </Provider>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App authUser={authUser} />
+      </BrowserRouter>
+    </Provider>
+    // </React.StrictMode>
   );
 }
 
