@@ -3,15 +3,20 @@ import { FaRegEnvelope, FaKey, FaEyeSlash, FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "features/auth/authSlice";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("farazfayyaz2163@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState("123654");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const onLoginSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+    if (email && password) {
+      dispatch(loginUser({ email, password }));
+    } else {
+      toast("Please fill email & password");
+    }
   };
   return (
     <div className="login-card bg-img p-0">

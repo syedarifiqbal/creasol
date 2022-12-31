@@ -1,27 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App";
-// import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "store";
 import { Provider } from "react-redux";
 import { client } from "utils/utils";
-import { toast } from "react-toastify";
-// import utils from "utils/utils";
 
 import "react-toastify/dist/ReactToastify.css";
+import { API_PATH } from "constants";
 
-async function checkLogin() {
+async function checkLoginAndInitialize() {
   let authUser = null;
+  if (localStorage.token) {
+    try {
+      const res = await client.get("/api/profile");
 
-  try {
-    const res = await client.get("/api/profile");
-
-    const { data, status } = res;
-    if (status === 200) {
-      authUser = data;
-    }
-  } catch (error) {}
+      const { data, status } = res;
+      if (status === 200) {
+        authUser = data;
+      }
+    } catch (error) {}
+  }
   const root = ReactDOM.createRoot(document.getElementById("root"));
   setTimeout(() => {
     document.querySelector(".loader").classList.remove("show");
@@ -30,14 +29,14 @@ async function checkLogin() {
     // <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App authUser={authUser} />
+        <App user={authUser} />
       </BrowserRouter>
     </Provider>
     // </React.StrictMode>
   );
 }
 
-checkLogin();
+checkLoginAndInitialize();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

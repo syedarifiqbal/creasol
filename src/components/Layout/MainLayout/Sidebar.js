@@ -4,9 +4,15 @@ import PackagesIcon from "assets/images/nav-icon-3.png";
 import OrderIcon from "assets/images/nav-icon-4.png";
 import PaymentLogIcon from "assets/images/nav-icon-5.png";
 import ContactAdminIcon from "assets/images/nav-icon-6.png";
+import { userSelector } from "features/auth/authSlice";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
+  const { user } = useSelector(userSelector);
+
+  const isAdmin = user && user.is_admin;
+
   //assigning location variable
   const location = useLocation();
 
@@ -33,12 +39,16 @@ const Sidebar = () => {
                 <span className="menu-title">Dashboard</span>
               </Link>
             </li>
-            <li className={`nav-item ${pageName === "users" ? "active" : ""}`}>
-              <Link to="users">
-                <img src={UsersIcon} alt="" className="img-fluid me-2" />
-                <span className="menu-title">Users</span>
-              </Link>
-            </li>
+            {isAdmin && (
+              <li
+                className={`nav-item ${pageName === "users" ? "active" : ""}`}
+              >
+                <Link to="users">
+                  <img src={UsersIcon} alt="" className="img-fluid me-2" />
+                  <span className="menu-title">Users</span>
+                </Link>
+              </li>
+            )}
             <li
               className={`nav-item ${pageName === "packages" ? "active" : ""}`}
             >

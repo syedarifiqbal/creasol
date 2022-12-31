@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { API_PATH } from "./../../constants";
 
 const initialState = {
-  user: "",
+  user: null,
   message: "",
   error: "",
   isLoading: false,
-  isSuccess: false,
+  isSuccess: true,
+  isloggedOut: false,
 };
 
 export const loginUser = createAsyncThunk(
@@ -21,6 +23,9 @@ export const loginUser = createAsyncThunk(
           password,
         },
       });
+      response.data.image = response.data.image
+        ? API_PATH + response.data.image
+        : "";
       const data = await response.data;
       if (response.status === 200) {
         localStorage.setItem("token", data.token);
@@ -29,7 +34,7 @@ export const loginUser = createAsyncThunk(
         return thunkAPI.rejectWithValue(response);
       }
     } catch (e) {
-      console.log(e.response);
+      toast(e.response.data);
       return thunkAPI.rejectWithValue(e.response);
     }
   }
@@ -50,6 +55,9 @@ export const registerUser = createAsyncThunk(
           password,
         },
       });
+      response.data.image = response.data.image
+        ? API_PATH + response.data.image
+        : "";
       const data = await response.data;
       if (response.status === 201) {
         localStorage.setItem("token", data.token);
@@ -67,11 +75,24 @@ export const registerUser = createAsyncThunk(
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setLoginDetails: (state, action) => {
+      if (!state.isloggedOut) {
+        action.payload.image = API_PATH + action.payload.image;
+        state.user = action.payload;
+      }
+    },
+    logout: (state) => {
+      localStorage.removeItem("token");
+      state.user = null;
+      state.isloggedOut = true;
+    },
+  },
   extraReducers: {
     [registerUser.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
+      state.isloggedOut = false;
       state.user = payload.data;
       state.message = "Regsitration Successful";
     },
@@ -85,6 +106,7 @@ export const authSlice = createSlice({
     [loginUser.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
+      state.isloggedOut = false;
       state.user = payload.data;
       state.message = "Login Successful!";
     },
@@ -99,3 +121,5 @@ export const authSlice = createSlice({
 });
 
 export const userSelector = (state) => state.auth;
+
+export const { setLoginDetails, logout } = authSlice.actions;

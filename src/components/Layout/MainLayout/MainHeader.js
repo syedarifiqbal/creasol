@@ -1,11 +1,17 @@
 import LogoAdmin from "assets/images/logo-admin.png";
 import OnlineAvatar from "assets/images/online-avatar.png";
-import { useEffect } from "react";
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, userSelector } from "features/auth/authSlice";
 
 const MainHeader = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector(userSelector);
+  const username = user && `${user.first_name} ${user.last_name}`;
+  const userImage = user && (user.image || OnlineAvatar);
+  const userType = user && (Boolean(user.is_admin) ? "admin" : "user");
   return (
     <div id="header">
       <nav className="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-light navbar-border">
@@ -206,12 +212,12 @@ const MainHeader = () => {
                   >
                     <span className="avatar avatar-online">
                       {" "}
-                      <img src={OnlineAvatar} alt="avatar" />{" "}
+                      <img src={userImage} alt="avatar" />{" "}
                     </span>
                     <div>
-                      <span className="user-name fw-medium">Denny Flex</span>
+                      <span className="user-name fw-medium">{username}</span>
                       <br />
-                      <span className="user-role fw-medium">admin</span>
+                      <span className="user-role fw-medium">{userType}</span>
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu
@@ -229,6 +235,10 @@ const MainHeader = () => {
                         className="dropdown-item"
                         data-bs-toggle="modal"
                         data-bs-target=".profile-logout"
+                        onClick={() => {
+                          dispatch(logout());
+                          // window.location.reload();
+                        }}
                       >
                         <i className="fa fa-power-off"></i>Logout
                       </Link>

@@ -1,6 +1,15 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { client } from "utils/utils";
 
 const ContactAdmin = () => {
+  const [feedbacks, setFeedbacks] = useState(null);
+  useEffect(() => {
+    client("/api/feedback?fields=name email createdAt").then((res) => {
+      setFeedbacks(res);
+    });
+  }, []);
+
   return (
     <section id="user_page" className="user-page">
       <div className="content-body">
@@ -16,58 +25,36 @@ const ContactAdmin = () => {
             <table className="table table-borderless dataTable px-2">
               <thead>
                 <tr>
-                  <th className="sorting">Feedback ID</th>
-                  <th className="sorting">Date Received</th>
                   <th className="sorting">Name</th>
                   <th className="sorting">Email</th>
+                  <th className="sorting">Date Received</th>
                   <th className="sorting">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>12</td>
-                  <td>09/21 09:00 PM</td>
-                  <td>John Smith</td>
-                  <td>Johnwick@gmail.com</td>
-                  <td>
-                    <a href="feedback-detail.php">
-                      <span className="status active">View</span>
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>13</td>
-                  <td>09/21 09:00 PM</td>
-                  <td>Alber Santner</td>
-                  <td>Albersantner@gmail.com</td>
-                  <td>
-                    <a href="feedback-detail.php">
-                      <span className="status active">View</span>
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>14</td>
-                  <td>09/21 09:00 PM</td>
-                  <td>Micheal Shaun</td>
-                  <td>MichealShaun@gmail.com</td>
-                  <td>
-                    <a href="feedback-detail.php">
-                      <span className="status active">View</span>
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>15</td>
-                  <td>09/21 09:00 PM</td>
-                  <td>Jonathan Alen</td>
-                  <td>JonathanAlen@gmail.com</td>
-                  <td>
-                    <a href="feedback-detail.php">
-                      <span className="status active">View</span>
-                    </a>
-                  </td>
-                </tr>
+                {feedbacks !== null ? (
+                  feedbacks.data.data.map((feedback) => (
+                    <tr key={feedback._id}>
+                      <td>{feedback.name}</td>
+                      <td>{feedback.email}</td>
+                      <td>{feedback.createdAt}</td>
+                      <td>
+                        <Link
+                          to="/customer-feedback"
+                          className="text-purple text-decoration-underline fw-semibold"
+                        >
+                          <span className="status active">View</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      Loading...
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

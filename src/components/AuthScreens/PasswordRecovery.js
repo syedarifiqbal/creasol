@@ -1,23 +1,53 @@
 import { useState } from "react";
 import { FaRegEnvelope, FaKey } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { client } from "utils/utils";
 
 const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [step, setStep] = useState("email");
-
+  const [step, setStep] = useState("code");
+  const navigate = useNavigate();
   const onContinueClick = (e) => {
     e.preventDefault();
     switch (step) {
       case "email":
-        setStep("code");
+        if (email) {
+          client("/api/forget-password", {
+            method: "POST",
+            data: {
+              email,
+            },
+          }).then((res) => {
+            if (res.status === 200) setStep("code");
+          });
+        }
         break;
       case "code":
-        setStep("password");
+        if (code.length === 6) setStep("password");
+        else toast("Code must be 6 digit long.");
         break;
       case "password":
+        if (password && confirmPassword && password === confirmPassword) {
+          client("/api/reset-password", {
+            method: "POST",
+            data: {
+              code,
+              password,
+              password_confirmation: confirmPassword,
+            },
+          }).then((res) => {
+            if (res.status === 200) navigate("/");
+            else toast(res.data.message);
+          });
+        } else {
+          toast(
+            "Please fill password & confirm password and make sure they are same."
+          );
+        }
         break;
       default:
         setStep("email");

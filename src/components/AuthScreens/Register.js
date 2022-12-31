@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "features/auth/authSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { toastConstant } from "constants";
+import { client } from "utils/utils";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -27,6 +28,8 @@ const Register = () => {
   const user = useSelector((state) => state.user);
 
   const Navigate = useNavigate();
+
+  window.client = client;
 
   const onRegisterSubmit = (e) => {
     e.preventDefault();

@@ -1,13 +1,18 @@
+import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { client } from "utils/utils";
 
 const Users = () => {
   const [users, setUsers] = useState(null);
+  const navigate = useNavigate();
+  const { user } = useSelector(userSelector);
+  const isAdmin = user && user.is_admin;
   // console.log(users);
   useEffect(() => {
+    if (!isAdmin) navigate("/");
     client("/api/users?perPage=10").then((res) => {
-      console.log(res);
       setUsers(res);
     });
   }, []);

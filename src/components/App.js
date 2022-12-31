@@ -3,7 +3,7 @@ import Login from "./AuthScreens/Login";
 import PasswordRecovery from "./AuthScreens/PasswordRecovery";
 import AuthLayout from "./Layout/AuthLayout";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MainLayout from "./Layout/MainLayout/MainLayout";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Users from "./Pages/Users/Users";
@@ -19,23 +19,35 @@ import Orders from "./Pages/Orders/Orders";
 import PaymentLog from "./Pages/PaymentLog/PaymentLog";
 import ContactAdmin from "./Pages/ContactAdmin/ContactAdmin";
 import Register from "./AuthScreens/Register";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import { setLoginDetails } from "features/auth/authSlice";
+import UserProfile from "./Pages/Users/UserProfile";
 
 // import { useSelector } from "react-redux";
 
-function App({ authUser }) {
+function App({ user }) {
   const [isloggedIn, setIsloggedIn] = useState(null);
   const auth = useSelector((state) => state.auth);
-  // const userFromLocalHost = ;
+  const dispatch = useDispatch();
+
+  let authUser = useRef();
   useEffect(() => {
-    // debugger;
-    if (auth.user || authUser) {
+    authUser.current = user;
+  }, [user]);
+  useEffect(() => {
+    if (authUser.current !== null) {
+      setIsloggedIn(true);
+      if (auth.user === null) {
+        dispatch(setLoginDetails(authUser.current));
+        authUser.current = null;
+      }
+    } else if (authUser.current === null && auth.user !== null) {
       setIsloggedIn(true);
     } else {
       setIsloggedIn(false);
     }
-  }, [auth.user, authUser]);
+  }, [auth.user, authUser, dispatch]);
 
   // const auth = useSelector((state) => state.auth);
 
@@ -84,6 +96,10 @@ function App({ authUser }) {
             <Route
               path="/customer-feedback"
               element={!isloggedIn ? <Navigate to="/" /> : <ContactAdmin />}
+            />
+            <Route
+              path="/profile"
+              element={!isloggedIn ? <Navigate to="/" /> : <UserProfile />}
             />
             {/* MainLayout Screens */}
           </Route>
