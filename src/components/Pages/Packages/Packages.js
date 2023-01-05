@@ -1,12 +1,16 @@
 import IconOne from "assets/images/icon-1.png";
 import IconTwo from "assets/images/icon-2.png";
 import IconThree from "assets/images/icon-3.png";
+import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { client } from "utils/utils";
 
 const Packages = () => {
   const [packages, setPackages] = useState(null);
+  const { user } = useSelector(userSelector);
+  const isAdmin = user && user.is_admin;
 
   useEffect(() => {
     client("/api/packages").then((res) => {
@@ -21,9 +25,19 @@ const Packages = () => {
         <div className="col-12">
           <div className="content-body">
             <div className="page-title mb-0">
-              <div className="row mb-5">
-                <div className="col-12">
-                  <h2 className="mb-0">Packages</h2>
+              <div class="row mb-5">
+                <div class="col-12">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h2 class="mb-0">Packages</h2>
+                    {!isAdmin && (
+                      <a
+                        href="subscribed-packages.php"
+                        class="fs-22 fw-bold text-purple text-decoration-underline"
+                      >
+                        Subscribed Packages
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -47,7 +61,7 @@ const Packages = () => {
                               pkg.description.map((desc) => <li>{desc}</li>)}
                           </ul>
                           <Link to="/packages" className="btn btn-primary px-5">
-                            Edit
+                            {isAdmin ? "Edit" : "Pay Now"}
                           </Link>
                         </div>
                       </div>

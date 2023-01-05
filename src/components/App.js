@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import { setLoginDetails } from "features/auth/authSlice";
 import UserProfile from "./Pages/Users/UserProfile";
+import ViewFeedBack from "./Pages/ContactAdmin/ViewFeedBack";
 
 // import { useSelector } from "react-redux";
 
@@ -100,6 +101,10 @@ function App({ user }) {
             <Route
               path="/profile"
               element={!isloggedIn ? <Navigate to="/" /> : <UserProfile />}
+            />
+            <Route
+              path="/feedback/:id?"
+              element={!isloggedIn ? <Navigate to="/" /> : <ViewFeedBack />}
             />
             {/* MainLayout Screens */}
           </Route>

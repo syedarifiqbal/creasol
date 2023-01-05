@@ -9,13 +9,21 @@ const Users = () => {
   const navigate = useNavigate();
   const { user } = useSelector(userSelector);
   const isAdmin = user && user.is_admin;
-  // console.log(users);
+
   useEffect(() => {
     if (!isAdmin) navigate("/");
-    client("/api/users?perPage=10").then((res) => {
+    getUsers();
+  }, [isAdmin, navigate]);
+
+  const getUsers = (perPage = 10, page = 1, filter) => {
+    client(
+      `/api/users?perPage=${perPage}&page=${page}${
+        filter ? "&q=" + filter : ""
+      }`
+    ).then((res) => {
       setUsers(res);
     });
-  }, []);
+  };
 
   return (
     <section id="user_page" className="user-page">
