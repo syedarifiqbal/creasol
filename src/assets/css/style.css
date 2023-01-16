@@ -1158,7 +1158,7 @@ body.vertical-layout {
 .pricing .pricingBody {
   padding: 30px 40px;
 }
-.content-body a.deleteBtn {
+.content-body .deleteBtn {
   background: rgba(254, 47, 47, 0.8);
   border: 2px solid #ffffff;
   box-shadow: 0px 0px 12px rgb(0 0 0 / 26%);

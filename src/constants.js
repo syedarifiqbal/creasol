@@ -16,3 +16,6 @@ export const stateConstants = {
   error: "",
 };
 export const API_PATH = "http://localhost:4001";
+
+export const STRIPE_PK =
+  "pk_test_51MPtXPItbk5K5BY48SdqRcO2pO9iyolrFmdxt3P17oJiSzIFLoXsBOSTaWnyrphXBs3NvzTcmY7RNlbV814fYdNE00MbzQbNco";

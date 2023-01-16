@@ -24,6 +24,10 @@ import { ToastContainer } from "react-toastify";
 import { setLoginDetails } from "features/auth/authSlice";
 import UserProfile from "./Pages/Users/UserProfile";
 import ViewFeedBack from "./Pages/ContactAdmin/ViewFeedBack";
+import OrderDetail from "./Pages/Orders/Detail/OrderDetail";
+import PostListing from "./Pages/Posts/PostListing";
+import AddEditPost from "./Pages/Posts/AddEditPost";
+import AddPost from "./Pages/Posts/AddPost";
 
 // import { useSelector } from "react-redux";
 
@@ -91,6 +95,10 @@ function App({ user }) {
               element={!isloggedIn ? <Navigate to="/" /> : <Orders />}
             />
             <Route
+              path="/order/:id"
+              element={!isloggedIn ? <Navigate to="/" /> : <OrderDetail />}
+            />
+            <Route
               path="/payment-log"
               element={!isloggedIn ? <Navigate to="/" /> : <PaymentLog />}
             />
@@ -105,6 +113,22 @@ function App({ user }) {
             <Route
               path="/feedback/:id?"
               element={!isloggedIn ? <Navigate to="/" /> : <ViewFeedBack />}
+            />
+            <Route
+              path="/posts/:id?"
+              element={!isloggedIn ? <Navigate to="/" /> : <PostListing />}
+            />
+            <Route
+              path="/posts/:OrderId?"
+              element={!isloggedIn ? <Navigate to="/" /> : <PostListing />}
+            />
+            <Route
+              path={"/post/add/:OrderId?"}
+              element={!isloggedIn ? <Navigate to="/" /> : <AddPost />}
+            />
+            <Route
+              path={"/post/edit/:OrderId?/:PostId?"}
+              element={!isloggedIn ? <Navigate to="/" /> : <AddEditPost />}
             />
             {/* MainLayout Screens */}
           </Route>

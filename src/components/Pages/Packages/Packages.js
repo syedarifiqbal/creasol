@@ -1,16 +1,20 @@
 import IconOne from "assets/images/icon-1.png";
-import IconTwo from "assets/images/icon-2.png";
-import IconThree from "assets/images/icon-3.png";
+import { STRIPE_PK } from "constants";
+// import IconTwo from "assets/images/icon-2.png";
+// import IconThree from "assets/images/icon-3.png";
 import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import StripeCheckout from "react-stripe-checkout";
 import { client } from "utils/utils";
 
 const Packages = () => {
   const [packages, setPackages] = useState(null);
   const { user } = useSelector(userSelector);
   const isAdmin = user && user.is_admin;
+  const email = user && user.email;
+  const Navigate = useNavigate();
 
   useEffect(() => {
     client("/api/packages").then((res) => {
@@ -19,20 +23,47 @@ const Packages = () => {
       );
     });
   }, []);
+
+  const HandleClick = (e) => {
+    e.preventDefault();
+    if (isAdmin) {
+      // Admin Click
+      Navigate("/packages");
+    }
+  };
+
+  const handleToken = (token, pkg) => {
+    debugger;
+    const body = {
+      stripe_token: token,
+      pkg,
+    };
+    return client("/api/payment", {
+      method: "POST",
+      data: body,
+    })
+      .then((response) => {
+        console.log(response);
+        const { status } = response;
+        console.log("STATUS ", status);
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <section id="configuration" className="dashboard">
       <div className="row">
         <div className="col-12">
           <div className="content-body">
             <div className="page-title mb-0">
-              <div class="row mb-5">
-                <div class="col-12">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <h2 class="mb-0">Packages</h2>
+              <div className="row mb-5">
+                <div className="col-12">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <h2 className="mb-0">Packages</h2>
                     {!isAdmin && (
                       <a
                         href="subscribed-packages.php"
-                        class="fs-22 fw-bold text-purple text-decoration-underline"
+                        className="fs-22 fw-bold text-purple text-decoration-underline"
                       >
                         Subscribed Packages
                       </a>
@@ -42,9 +73,13 @@ const Packages = () => {
               </div>
             </div>
             <div className="row text-center mb-3">
+              {/* <PaymentModal show={modalShow} handleClose={handleClose} /> */}
               {packages
                 ? packages.map((pkg) => (
-                    <div className="col-lg-4 col-md-6 mb-md-0 mb-3">
+                    <div
+                      className="col-lg-4 col-md-6 mb-md-0 mb-3"
+                      key={pkg._id}
+                    >
                       <div className="pricing">
                         <div className="pricingHeader">
                           <h6 className="fs-20 fw-semibold ff-rubik text-dark">
@@ -60,9 +95,26 @@ const Packages = () => {
                             {pkg.description &&
                               pkg.description.map((desc) => <li>{desc}</li>)}
                           </ul>
-                          <Link to="/packages" className="btn btn-primary px-5">
-                            {isAdmin ? "Edit" : "Pay Now"}
-                          </Link>
+                          {isAdmin ? (
+                            <button
+                              className="btn btn-primary px-5"
+                              onClick={HandleClick}
+                            >
+                              Edit
+                            </button>
+                          ) : (
+                            <StripeCheckout
+                              stripeKey={STRIPE_PK}
+                              token={(token) => handleToken(token, pkg)}
+                              amount={pkg.price * 100}
+                              name={pkg.name}
+                              email={email}
+                            >
+                              <button className="btn btn-primary px-5">
+                                Pay Now
+                              </button>
+                            </StripeCheckout>
+                          )}
                         </div>
                       </div>
                     </div>

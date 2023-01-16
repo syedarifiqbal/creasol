@@ -5,9 +5,13 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "store";
 import { Provider } from "react-redux";
 import { client } from "utils/utils";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 import "react-toastify/dist/ReactToastify.css";
-import { API_PATH } from "constants";
+const stripePromise = loadStripe(
+  "pk_test_51BMBBHHnBzjYlOyyd48yLxTv1qYUSUkCkztnbcBjY7lksfc6ajSeDxXul9BtvivH0SJfDJg0JhgVOKDGCu3UXNtv00OmKmJwzE"
+);
 
 async function checkLoginAndInitialize() {
   let authUser = null;
@@ -28,9 +32,11 @@ async function checkLoginAndInitialize() {
   root.render(
     // <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App user={authUser} />
-      </BrowserRouter>
+      <Elements stripe={stripePromise}>
+        <BrowserRouter>
+          <App user={authUser} />
+        </BrowserRouter>
+      </Elements>
     </Provider>
     // </React.StrictMode>
   );
