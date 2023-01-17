@@ -26,8 +26,8 @@ import UserProfile from "./Pages/Users/UserProfile";
 import ViewFeedBack from "./Pages/ContactAdmin/ViewFeedBack";
 import OrderDetail from "./Pages/Orders/Detail/OrderDetail";
 import PostListing from "./Pages/Posts/PostListing";
-import AddEditPost from "./Pages/Posts/AddEditPost";
 import AddPost from "./Pages/Posts/AddPost";
+import EditPost from "./Pages/Posts/EditPost";
 
 // import { useSelector } from "react-redux";
 
@@ -128,7 +128,7 @@ function App({ user }) {
             />
             <Route
               path={"/post/edit/:OrderId?/:PostId?"}
-              element={!isloggedIn ? <Navigate to="/" /> : <AddEditPost />}
+              element={!isloggedIn ? <Navigate to="/" /> : <EditPost />}
             />
             {/* MainLayout Screens */}
           </Route>

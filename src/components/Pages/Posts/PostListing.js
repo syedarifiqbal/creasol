@@ -1,10 +1,15 @@
+import { userSelector } from "features/auth/authSlice";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { client } from "utils/utils";
 
 const PostListing = () => {
   const { id: OrderId } = useParams();
   const [Order, setOrder] = useState(null);
+  let { user } = useSelector(userSelector);
+  user = user === null ? {} : user;
+  const isAdmin = user && user.is_admin;
 
   useEffect(() => {
     client(`/api/order/${OrderId}`).then((order) => {
@@ -20,15 +25,73 @@ const PostListing = () => {
         <div className="page-title mb-4">
           <div className="row">
             <div className="col-12">
-              <h2>Order Listing / Post Listing</h2>
+              <h2>
+                {isAdmin ? "Order Listing / Post Listing" : "Order Detail"}
+              </h2>
             </div>
           </div>
         </div>
-        <div className="mb-4 text-end">
-          <Link to={`/post/add/${OrderId}`} className="btn btn-primary">
-            Add Post
-          </Link>
-        </div>
+        {isAdmin ? (
+          <div className="mb-4 text-end">
+            <Link to={`/post/add/${OrderId}`} className="btn btn-primary">
+              Add Post
+            </Link>
+          </div>
+        ) : Order ? (
+          <>
+            <div className="row mb-3">
+              <div className="col-lg-6 mb-lg-0 mb-3">
+                <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                  Order ID
+                </label>
+                <input
+                  type="text"
+                  className="form-control bg-gray border"
+                  readOnly={true}
+                  value={Order._id}
+                />
+              </div>
+              <div className="col-lg-6">
+                <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                  Customer Name
+                </label>
+                <input
+                  type="text"
+                  className="form-control bg-gray border"
+                  readOnly={true}
+                  value={Order.user.first_name + " " + Order.user.last_name}
+                />
+              </div>
+            </div>
+            <div className="row mb-4">
+              <div className="col-lg-6 mb-lg-0 mb-3">
+                <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                  Phone #
+                </label>
+                <input
+                  type="text"
+                  className="form-control bg-gray border"
+                  readOnly={true}
+                  value={Order.user.phone}
+                />
+              </div>
+              <div className="col-lg-6">
+                <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                  Package
+                </label>
+                <input
+                  type="text"
+                  className="form-control bg-gray border"
+                  readOnly={true}
+                  value={Order.pkg_name}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+
         <div className="dataTables_wrapper">
           <div className="main-tabble table-responsive mx-n2">
             <table className="table table-borderless dataTable px-2">

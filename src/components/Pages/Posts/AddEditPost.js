@@ -1,7 +1,11 @@
 import { userSelector } from "features/auth/authSlice";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { client } from "utils/utils";
+import { toast } from "react-toastify";
+import { toastConstant } from "constants";
+import { API_PATH } from "constants";
+import { format } from "date-fns";
 // Getting Images
 import img1 from "assets/images/img-1.png";
 import img2 from "assets/images/img-2.png";
@@ -9,22 +13,32 @@ import img3 from "assets/images/img-3.png";
 import img4 from "assets/images/img-4.png";
 import img5 from "assets/images/img-5.png";
 import img6 from "assets/images/img-6.png";
-import { client } from "utils/utils";
-import { toast } from "react-toastify";
-import { toastConstant } from "constants";
 
 const AddEditPost = ({ mode, OrderId, PostId }) => {
   const [title, setTitle] = useState("");
   const [medium, setMedium] = useState("");
   const [description, setDescription] = useState("");
-  const { user } = useSelector(userSelector);
+  const [comment, setComment] = useState("");
+  let { user } = useSelector(userSelector);
+  user = user === null ? {} : user;
   const isAdmin = user && user.is_admin;
   const isAdding = mode === "Add";
   const [isLoading, setIsLoading] = useState(false);
+  const [post, setPost] = useState();
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     if (!isAdding) {
-      client(`/api/post/${PostId}`);
+      client(`/api/post/${PostId}`).then(({ status, data: post }) => {
+        console.log(post);
+        if (status === 200) {
+          setPost(post);
+          setComments(post.comments);
+          setTitle(post.title);
+          setMedium(post.post_medium);
+          setDescription(post.description);
+        }
+      });
     }
   }, [isAdding]);
 
@@ -48,13 +62,61 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
         }
       } catch (error) {
         console.log(error);
+        toast("An error occured!", toastConstant);
+      }
+    } else {
+      const data = {
+        title,
+        description,
+        status: "Pending Approval",
+        post_medium: medium,
+      };
+      if (!isAdmin) {
+        delete data.title;
+        delete data.post_medium;
+        data.status = "Approved";
+      }
+      try {
+        const post = await client(`/api/post/${PostId}`, {
+          method: "PUT",
+          data,
+        });
+        if (post.status === 204) {
+          toast("Post has been updated successfully!", toastConstant);
+        }
+      } catch (error) {
+        console.log(error);
         if (error.response.status === 400) {
           toast(error.response.data.message, toastConstant);
         } else {
           toast("An error occured!", toastConstant);
         }
       }
-    } else {
+    }
+    setIsLoading(false);
+  };
+
+  const HandleComment = async (e) => {
+    const data = {
+      user: user._id,
+      post: post._id,
+      text: comment,
+    };
+    try {
+      const fetchedComment = await client("/api/comment", {
+        method: "POST",
+        data,
+      });
+      setComment("");
+      if (fetchedComment.status === 201) {
+        setComments((prevState) => [...prevState, fetchedComment.data]);
+        setPost((prevState) => {
+          prevState.status = "Rejected with Comments";
+          return prevState;
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -69,7 +131,12 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
               </h2>
               <div>
                 <h6 className="fs-14 fw-medium text-dark ff-helve">Status</h6>
-                <input type="text" className="form-control" />
+                <input
+                  type="text"
+                  className="form-control border"
+                  readOnly
+                  value={post ? post.status : ""}
+                />
               </div>
             </div>
           </div>
@@ -172,95 +239,52 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
           </button>
         </div>
       </div>
-      {/* Comment Row only show if not adding*/}
+      {/* Comment Row will only show when the post is editing*/}
       {!isAdding && (
-        <div className="row">
+        <div className="row mt-4">
           <div className="col-12">
             <h5 className="fs-18 fw-medium text-dark ff-helve mb-3">
               Comments
             </h5>
+            {comments.length
+              ? comments.map((com) => (
+                  <div className="commentSection d-flex pb-3 mb-3">
+                    <div className="commentImg flex-shrink-0 me-3">
+                      <img
+                        src={API_PATH + com.user.image}
+                        alt=""
+                        className="img-fluid"
+                      />
+                    </div>
+                    <div className="commentContect">
+                      <div className="mb-3">
+                        <h6 className="fs-16 fw-bold text-purple">
+                          {com.user.first_name + " " + com.user.last_name}
+                        </h6>
+                        <h6 className="fs-14 fw-medium text-gray">
+                          {format(
+                            new Date(com.createdAt),
+                            "hh:mm a - dd MMMM yyyy"
+                          )}
+                        </h6>
+                      </div>
+                      <p className="fs-16 fw-medium text-gray mb-0">
+                        {com.text.split("\n").map((value) => (
+                          <span className="d-block">{value}</span>
+                        ))}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              : ""}
             <div className="commentSection d-flex pb-3 mb-3">
               <div className="commentImg flex-shrink-0 me-3">
-                <img
-                  src="assets/images/profile-1.png"
-                  alt=""
-                  className="img-fluid"
-                />
-              </div>
-              <div className="commentContect">
-                <div className="mb-3">
-                  <h6 className="fs-16 fw-bold text-purple">Lily Coleman</h6>
-                  <h6 className="fs-14 fw-medium text-gray">
-                    09:45 AM - 20 June 2022
-                  </h6>
-                </div>
-                <p className="fs-16 fw-medium text-gray mb-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip consequat.
-                </p>
-              </div>
-            </div>
-            <div className="commentSection d-flex pb-3 mb-3">
-              <div className="commentImg flex-shrink-0 me-3">
-                <img
-                  src="assets/images/profile-2.png"
-                  alt=""
-                  className="img-fluid"
-                />
-              </div>
-              <div className="commentContect">
-                <div className="mb-3">
-                  <h6 className="fs-16 fw-bold text-purple">Lily Coleman</h6>
-                  <h6 className="fs-14 fw-medium text-gray">
-                    09:45 AM - 20 June 2022
-                  </h6>
-                </div>
-                <p className="fs-16 fw-medium text-gray mb-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip consequat.
-                </p>
-              </div>
-            </div>
-            <div className="commentSection d-flex pb-3 mb-3">
-              <div className="commentImg flex-shrink-0 me-3">
-                <img
-                  src="assets/images/profile-3.png"
-                  alt=""
-                  className="img-fluid"
-                />
-              </div>
-              <div className="commentContect">
-                <div className="mb-3">
-                  <h6 className="fs-16 fw-bold text-purple">Lily Coleman</h6>
-                  <h6 className="fs-14 fw-medium text-gray">
-                    09:45 AM - 20 June 2022
-                  </h6>
-                </div>
-                <p className="fs-16 fw-medium text-gray mb-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip consequat.
-                </p>
-              </div>
-            </div>
-            <div className="commentSection d-flex pb-3 mb-3">
-              <div className="commentImg flex-shrink-0 me-3">
-                <img
-                  src="assets/images/profile-4.png"
-                  alt=""
-                  className="img-fluid"
-                />
+                <img src={user.image} alt="" className="img-fluid" />
               </div>
               <div className="commentContect flex-grow-1">
                 <div className="mb-3">
-                  <h6 className="fs-16 fw-bold text-purple">Lily Coleman</h6>
-                  <h6 className="fs-14 fw-medium text-gray">
-                    09:45 AM - 20 June 2022
+                  <h6 className="fs-16 fw-bold text-purple">
+                    {user.first_name + " " + user.last_name}
                   </h6>
                 </div>
                 <div className="mb-3">
@@ -268,11 +292,13 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
                     className="form-control"
                     rows="5"
                     placeholder="Add Comments"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
                   ></textarea>
                 </div>
-                <a href="#" className="btn btn-primary">
-                  Post
-                </a>
+                <button className="btn btn-primary" onClick={HandleComment}>
+                  {isAdmin ? "Post" : "Reject With Comments"}
+                </button>
               </div>
             </div>
           </div>

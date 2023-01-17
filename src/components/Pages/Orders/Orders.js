@@ -4,10 +4,11 @@ import AdminOrdersScreen from "./AdminOrdersScreen";
 import UserOrdersScreen from "./UserOrdersScreen";
 
 const Orders = () => {
-  const { user } = useSelector(userSelector);
+  let { user } = useSelector(userSelector);
+  user = user === null ? {} : user;
   const isAdmin = user && user.is_admin;
 
-  return isAdmin ? <AdminOrdersScreen /> : <UserOrdersScreen />;
+  return <AdminOrdersScreen isAdmin={isAdmin} />;
 };
 
 export default Orders;
