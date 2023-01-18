@@ -1,5 +1,5 @@
 import { userSelector } from "features/auth/authSlice";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { client } from "utils/utils";
 import { toast } from "react-toastify";
@@ -26,6 +26,8 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState();
   const [comments, setComments] = useState([]);
+  const [images, setImages] = useState([]);
+  const FileUploader = useRef();
 
   useEffect(() => {
     if (!isAdding) {
@@ -37,6 +39,7 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
           setTitle(post.title);
           setMedium(post.post_medium);
           setDescription(post.description);
+          setImages(post.images);
         }
       });
     }
@@ -120,6 +123,37 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
     }
   };
 
+  const HandleFileSubmit = async (e) => {
+    const files = e.target.files;
+    const imageData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      let file = files.item(i);
+      imageData.append(`profile[${i}]`, file, file.name);
+    }
+    try {
+      const res = await client(`/api/post-images/${PostId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        data: imageData,
+      });
+      console.log("status", res.status);
+      console.log(res);
+      if (res.status === 200) {
+        setImages(res.data.images);
+        toast(res.data.message, toastConstant);
+      }
+    } catch (error) {
+      if (error.response.status === 400) {
+        toast(error.response.data.message, toastConstant);
+      } else {
+        console.log(error);
+        toast("An error occured", toastConstant);
+      }
+    }
+  };
+
   return (
     <>
       <div className="page-title mb-4">
@@ -143,49 +177,46 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
         </div>
       </div>
       <div className="row mb-4">
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-          <img src={img1} alt="" className="img-fluid w-100" />
-        </div>
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-          <div className="position-relative">
-            <img src={img2} alt="" className="img-fluid w-100" />
-            <span href="#" className="deleteBtn">
-              <i className="fas fa-times"></i>
-            </span>
+        {isAdmin ? (
+          <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
+            <input
+              type="file"
+              name="postfiles"
+              id="postfiles"
+              ref={FileUploader}
+              onChange={HandleFileSubmit}
+              multiple
+              className="d-none"
+            />
+            <img
+              src={img1}
+              alt=""
+              className="img-fluid w-100"
+              onClick={() => {
+                FileUploader.current.click();
+              }}
+            />
           </div>
-        </div>
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-          <div className="position-relative">
-            <img src={img3} alt="" className="img-fluid w-100" />
-            <span href="#" className="deleteBtn">
-              <i className="fas fa-times"></i>
-            </span>
-          </div>
-        </div>
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-          <div className="position-relative">
-            <img src={img4} alt="" className="img-fluid w-100" />
-            <span href="#" className="deleteBtn">
-              <i className="fas fa-times"></i>
-            </span>
-          </div>
-        </div>
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-          <div className="position-relative">
-            <img src={img5} alt="" className="img-fluid w-100" />
-            <span href="#" className="deleteBtn">
-              <i className="fas fa-times"></i>
-            </span>
-          </div>
-        </div>
-        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-          <div className="position-relative">
-            <img src={img6} alt="" className="img-fluid w-100" />
-            <span href="#" className="deleteBtn">
-              <i className="fas fa-times"></i>
-            </span>
-          </div>
-        </div>
+        ) : (
+          ""
+        )}
+
+        {images
+          ? images.map((image) => (
+              <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
+                <div className="position-relative">
+                  <img
+                    src={API_PATH + image}
+                    alt=""
+                    className="img-fluid w-100"
+                  />
+                  <span href="#" className="deleteBtn">
+                    <i className="fas fa-times"></i>
+                  </span>
+                </div>
+              </div>
+            ))
+          : ""}
       </div>
       <div className="row mb-3">
         <div className="col-md-6 mb-md-0 mb-3">
@@ -194,10 +225,11 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
           </label>
           <input
             type="text"
-            className="form-control border"
+            className={`form-control ${!isAdmin ? "border" : ""}`}
             placeholder="Post Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            readOnly={!isAdmin}
           />
         </div>
         <div className="col-md-6">
@@ -206,10 +238,11 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
           </label>
           <input
             type="text"
-            className="form-control border"
+            className={`form-control ${!isAdmin ? "border" : ""}`}
             placeholder="Post Medium"
             value={medium}
             onChange={(e) => setMedium(e.target.value)}
+            readOnly={!isAdmin}
           />
         </div>
       </div>
@@ -220,10 +253,11 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
               Description
             </label>
             <textarea
-              className="form-control"
+              className={`form-control ${!isAdmin ? "border" : ""}`}
               rows="8"
               onChange={(e) => setDescription(e.target.value)}
               value={description}
+              readOnly={!isAdmin}
             ></textarea>
           </div>
           <button
@@ -248,7 +282,10 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
             </h5>
             {comments.length
               ? comments.map((com) => (
-                  <div className="commentSection d-flex pb-3 mb-3">
+                  <div
+                    className="commentSection d-flex pb-3 mb-3"
+                    key={com._id}
+                  >
                     <div className="commentImg flex-shrink-0 me-3">
                       <img
                         src={API_PATH + com.user.image}
