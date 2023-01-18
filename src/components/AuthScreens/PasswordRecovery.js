@@ -9,7 +9,7 @@ const PasswordRecovery = () => {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [step, setStep] = useState("code");
+  const [step, setStep] = useState("email");
   const navigate = useNavigate();
   const onContinueClick = (e) => {
     e.preventDefault();
