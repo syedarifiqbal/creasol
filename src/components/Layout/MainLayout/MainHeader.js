@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, userSelector } from "features/auth/authSlice";
+import { useEffect, useState } from "react";
+import { client } from "utils/utils";
+import { format } from "date-fns";
 
 const MainHeader = () => {
   const dispatch = useDispatch();
@@ -12,6 +15,93 @@ const MainHeader = () => {
   const username = user && `${user.first_name} ${user.last_name}`;
   const userImage = user && (user.image || OnlineAvatar);
   const userType = user && (Boolean(user.is_admin) ? "admin" : "user");
+  const [notifications, setNotifications] = useState([]);
+  const [countOfUnreadNotification, setCountOfUnreadNotification] = useState(0);
+
+  useEffect(() => {
+    getNotification();
+    setInterval(() => {
+      getNotification();
+    }, 5000);
+  }, []);
+
+  const getNotification = async () => {
+    const { data: notif, status } = await client("/api/notification");
+    if (status === 200) {
+      setNotifications(notif);
+      setCountOfUnreadNotification(
+        notif.filter((notification) => notification.isRead === false).length
+      );
+    }
+  };
+
+  const NotificationLinks = () => {
+    return notifications.map((notification) => {
+      console.log(notification);
+      let name, sentence, url, date;
+      switch (notification.notification_type) {
+        case "Purchase":
+          // only shows to admin
+          name =
+            notification.user.first_name + " " + notification.user.last_name;
+          url = "/order/" + notification.order;
+          break;
+        case "PostUpdate":
+          if (userType === "admin") {
+            name =
+              notification.user.first_name + " " + notification.user.last_name;
+          } else {
+            name =
+              notification.created_by.first_name +
+              " " +
+              notification.created_by.last_name;
+          }
+          url = `/post/edit/${notification.order}/${notification.post}`;
+          break;
+        case "Comment":
+          if (userType === "admin") {
+            name =
+              notification.user.first_name + " " + notification.user.last_name;
+          } else {
+            name =
+              notification.created_by.first_name +
+              " " +
+              notification.created_by.last_name;
+          }
+          url = `/post/edit/${notification.order}/${notification.post}`;
+          break;
+        default:
+          break;
+      }
+      sentence = name.trim() + " " + notification.notification_text;
+
+      date =
+        format(new Date(notification.createdAt), "MMM dd, yyyy") +
+        " at " +
+        format(new Date(notification.createdAt), "hh:mm a");
+      return (
+        <Link to={url} key={notification._id}>
+          <div className="media d-flex white-space-normal">
+            <div className="media-left flex-shrink-0 align-self-top">
+              <i className="far fa-bell"></i>{" "}
+            </div>
+            <div className="media-body flex-grow-1">
+              <h6 className="media-heading">{sentence}</h6>
+              <small>
+                {}
+                {/* <time className="date-meta">Jul 23, 2022 at 09:15 AM</time> */}
+                <time className="date-meta">{date}</time>
+              </small>
+            </div>
+            <div className="media-left flex-shrink-0 align-self-top">
+              <i className="far fa-circle-dot"></i>{" "}
+            </div>
+          </div>
+        </Link>
+      );
+    });
+  };
+
   return (
     <div id="header">
       <nav className="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-light navbar-border">
@@ -57,9 +147,13 @@ const MainHeader = () => {
                     id="dropdown-basic"
                   >
                     <i className="far fa-bell"></i>{" "}
-                    <span className="badge badge-pill badge-default badge-danger badge-default badge-up">
-                      5
-                    </span>{" "}
+                    {countOfUnreadNotification ? (
+                      <span className="badge badge-pill badge-default badge-danger badge-default badge-up">
+                        {countOfUnreadNotification}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu
@@ -77,126 +171,7 @@ const MainHeader = () => {
                       as="li"
                     >
                       <PerfectScrollbar>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
-                        <Link>
-                          <div className="media d-flex">
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-bell"></i>{" "}
-                            </div>
-                            <div className="media-body flex-grow-1">
-                              <h6 className="media-heading">
-                                You have a new user request
-                              </h6>
-                              <small>
-                                <time className="date-meta">
-                                  Jul 23, 2022 at 09:15 AM
-                                </time>
-                              </small>
-                            </div>
-                            <div className="media-left flex-shrink-0 align-self-top">
-                              <i className="far fa-circle-dot"></i>{" "}
-                            </div>
-                          </div>
-                        </Link>
+                        <NotificationLinks />
                       </PerfectScrollbar>
                     </Dropdown.Item>
                     <li className="dropdown-menu-footer border-top mt-3">

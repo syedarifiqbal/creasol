@@ -1,4 +1,7 @@
-import React from "react";
+import ChartImageTwo from "assets/images/chart-2.png";
+import DotOne from "assets/images/dot-1.png";
+import DotTwo from "assets/images/dot-2.png";
+import DotThree from "assets/images/dot-3.png";
 
 const UserDashboard = () => {
   return (
@@ -81,7 +84,7 @@ const UserDashboard = () => {
                     Post Ratio
                   </h6>
                   <img
-                    src="assets/images/chart-2.png"
+                    src={ChartImageTwo}
                     alt=""
                     className="img-fluid w-100 mb-4"
                   />
@@ -92,7 +95,7 @@ const UserDashboard = () => {
                     <div className="d-flex align-items-center">
                       <div className="me-3">
                         <img
-                          src="assets/images/dot-1.png"
+                          src={DotOne}
                           alt=""
                           className="img-fluid d-inline-block me-2"
                         />
@@ -102,7 +105,7 @@ const UserDashboard = () => {
                       </div>
                       <div className="me-3">
                         <img
-                          src="assets/images/dot-2.png"
+                          src={DotTwo}
                           alt=""
                           className="img-fluid d-inline-block me-2"
                         />
@@ -112,7 +115,7 @@ const UserDashboard = () => {
                       </div>
                       <div className="me-3">
                         <img
-                          src="assets/images/dot-3.png"
+                          src={DotThree}
                           alt=""
                           className="img-fluid d-inline-block me-2"
                         />

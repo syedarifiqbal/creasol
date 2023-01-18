@@ -1,4 +1,5 @@
 import IconOne from "assets/images/icon-1.png";
+import { toastConstant } from "constants";
 import { STRIPE_PK } from "constants";
 // import IconTwo from "assets/images/icon-2.png";
 // import IconThree from "assets/images/icon-3.png";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
+import { toast } from "react-toastify";
 import { client } from "utils/utils";
 
 const Packages = () => {
@@ -44,10 +46,17 @@ const Packages = () => {
     })
       .then((response) => {
         console.log(response);
-        const { status } = response;
+        const { status, data } = response;
+        if (status === 201) {
+          toast("Order has been created.", toastConstant);
+          Navigate(`/posts/${data._id}`);
+        }
         console.log("STATUS ", status);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        toast("An error occurred.", toastConstant);
+      });
   };
 
   return (

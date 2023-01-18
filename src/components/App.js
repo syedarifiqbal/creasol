@@ -13,6 +13,7 @@ import "app-assets/css/plugins/menu/vertical-menu.css";
 import "assets/fonts/stylesheet.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import "assets/css/style.css";
+import "assets/css/style-user.css";
 
 import Packages from "./Pages/Packages/Packages";
 import Orders from "./Pages/Orders/Orders";
