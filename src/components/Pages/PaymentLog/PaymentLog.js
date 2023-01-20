@@ -4,6 +4,12 @@ import DotThree from "assets/images/dot-3.png";
 import Chart from "assets/images/chart.png";
 
 const PaymentLog = () => {
+
+  const [filter, setFilter] = useState({
+    status: '',
+    year: '',
+  });
+
   return (
     <section id="configuration" className="dashboard">
       <div className="row">
@@ -56,20 +62,8 @@ const PaymentLog = () => {
                     <h3 className="mb-sm-0 mb-3">Sales Per Month</h3>
                     <div className="">
                       <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2">
-                        <select name="" id="" className="form-control">
-                          <option value="">2022</option>
-                          <option value="">2021</option>
-                          <option value="">2020</option>
-                          <option value="">2019</option>
-                          <option value="">2018</option>
-                          <option value="">2017</option>
-                          <option value="">2016</option>
-                          <option value="">2015</option>
-                          <option value="">2014</option>
-                          <option value="">2013</option>
-                          <option value="">2012</option>
-                          <option value="">2011</option>
-                          <option value="">2010</option>
+                        <select name="year" value={filter.year} className="form-control" onChange={e => setFilter({ ...filter, year: e.target.value })}>
+                          {generateArrayOfYears().map(year => (<option value={year} >{year}</option>))}
                         </select>
                       </div>
                     </div>

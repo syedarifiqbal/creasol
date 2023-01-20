@@ -4,17 +4,83 @@ import DotOne from "assets/images/dot-1.png";
 import DotTwo from "assets/images/dot-2.png";
 import DotThree from "assets/images/dot-3.png";
 import { useEffect, useState } from "react";
-import { client } from "utils/utils";
+import { client, generateArrayOfYears } from "utils/utils";
 import { Link } from "react-router-dom";
+
+import UserChart from "components/common/UserChart";
+import PopularPackageChage from "components/common/PopularPackageChart";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState(null);
-  // console.log(users);
+
+  const [filter, setFilter] = useState({
+    status: undefined,
+    year: (new Date).getFullYear(),
+  });
+
+  const [userChart, setUserChart] = useState({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [{
+      label: 'Popular usage',
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 205, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(201, 203, 207, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)',
+        'rgb(255, 159, 64)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(54, 162, 235)',
+        'rgb(153, 102, 255)',
+        'rgb(201, 203, 207)'
+      ],
+      borderWidth: 1
+    }]
+  });
+
+  const [popularPackageChart, setPopularPackageChart] = useState({
+    labels: ['Package 1', 'Package 2', 'Package 3'],
+    datasets: [{
+      label: 'Popular usage',
+      data: [0, 0, 0],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 205, 86, 0.2)',
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)',
+        'rgb(255, 159, 64)',
+        'rgb(255, 205, 86)',
+      ],
+      borderWidth: 1
+    }],
+  });
+
+  const loadDashboardData = async () => {
+    const data = await client("/api/users?top=3")
+    const { data: { graph, packageData } } = await client(`/api/dashboard?year=${filter.year}`)
+    const packageLabels = packageData.map(pkg => pkg._id);
+    const packageCount = packageData.map(pkg => pkg.count);
+
+    setUserChart({ ...userChart, datasets: [{ ...userChart.datasets, data: graph }] })
+    setPopularPackageChart({ ...popularPackageChart, labels: packageLabels, datasets: [{ ...popularPackageChart.datasets, data: packageCount }] })
+    setUsers(data);
+  }
+
   useEffect(() => {
-    client("/api/users?top=3").then((res) => {
-      setUsers(res);
-    });
-  }, []);
+
+    loadDashboardData();
+
+  }, [filter]);
+
   return (
     <section id="configuration" className="dashboard">
       <div className="row">
@@ -36,32 +102,23 @@ const AdminDashboard = () => {
                     <h3 className="mb-sm-0 mb-3">No. of users Registered</h3>
                     <div className="">
                       <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2">
-                        <select name="" id="" className="form-control">
-                          <option value="">2022</option>
-                          <option value="">2021</option>
-                          <option value="">2020</option>
-                          <option value="">2019</option>
-                          <option value="">2018</option>
-                          <option value="">2017</option>
-                          <option value="">2016</option>
-                          <option value="">2015</option>
-                          <option value="">2014</option>
-                          <option value="">2013</option>
-                          <option value="">2012</option>
-                          <option value="">2011</option>
-                          <option value="">2010</option>
+                        <select name="year" value={filter.year} className="form-control" onChange={e => setFilter({ ...filter, year: e.target.value })}>
+                          {generateArrayOfYears().map(year => (<option value={year} >{year}</option>))}
                         </select>
                       </div>
                     </div>
                   </div>
-                  <img src={ChartImage} alt="" className="img-fluid w-100" />
+
+                  <UserChart chartData={userChart} />
+
                 </div>
                 <div className="col-lg-4">
                   <h6 className="fs-16 fw-medium ff-helve text-dark text-center mb-3">
                     Popular Package
                   </h6>
-                  <img src={ChartImageTwo} alt="" className="img-fluid w-100" />
-                  <div className="my-4">
+                  <PopularPackageChage chartData={popularPackageChart} />
+                  {/* <img src={ChartImageTwo} alt="" className="img-fluid w-100" /> */}
+                  {/* <div className="my-4">
                     <h6 href="#" className="fs-16 text-dark ff-helve fw-bold">
                       Legends:
                     </h6>
@@ -97,7 +154,7 @@ const AdminDashboard = () => {
                         </h6>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -2,7 +2,7 @@ import { toastConstant } from "constants";
 import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { client } from "utils/utils";
 
@@ -99,9 +99,9 @@ const ViewFeedBack = ({}) => {
                   readOnly={true}
                 ></textarea>
               </div>
-              <a href="customer-feedback.php" className="btn btn-primary">
+              <Link to="/customer-feedback" className="btn btn-primary">
                 Back
-              </a>
+              </Link>
             </div>
           </div>
         ) : (
