@@ -29,6 +29,7 @@ import OrderDetail from "./Pages/Orders/Detail/OrderDetail";
 import PostListing from "./Pages/Posts/PostListing";
 import AddPost from "./Pages/Posts/AddPost";
 import EditPost from "./Pages/Posts/EditPost";
+import Notificaiton from "./Pages/Notification/Notification";
 
 // import { useSelector } from "react-redux";
 
@@ -130,6 +131,10 @@ function App({ user }) {
             <Route
               path={"/post/edit/:OrderId?/:PostId?"}
               element={!isloggedIn ? <Navigate to="/" /> : <EditPost />}
+            />
+            <Route
+              path={"/notifications"}
+              element={!isloggedIn ? <Navigate to="/" /> : <Notificaiton />}
             />
             {/* MainLayout Screens */}
           </Route>

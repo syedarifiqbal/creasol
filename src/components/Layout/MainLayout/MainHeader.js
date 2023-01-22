@@ -32,12 +32,14 @@ const MainHeader = () => {
       setCountOfUnreadNotification(
         notif.filter((notification) => notification.isRead === false).length
       );
+    } else {
+      setNotifications([]);
+      setCountOfUnreadNotification(0);
     }
   };
 
   const NotificationLinks = () => {
     return notifications.map((notification) => {
-      console.log(notification);
       let name, sentence, url, date;
       switch (notification.notification_type) {
         case "Purchase":
