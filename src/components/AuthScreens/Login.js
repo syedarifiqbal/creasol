@@ -6,8 +6,8 @@ import { loginUser } from "features/auth/authSlice";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [email, setEmail] = useState("farazfayyaz2163@gmail.com");
-  const [password, setPassword] = useState("123654");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const onLoginSubmit = async (e) => {

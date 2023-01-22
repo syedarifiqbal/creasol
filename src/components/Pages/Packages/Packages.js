@@ -84,10 +84,10 @@ const Packages = () => {
             <div className="row text-center mb-3">
               {/* <PaymentModal show={modalShow} handleClose={handleClose} /> */}
               {packages
-                ? packages.map((pkg) => (
+                ? packages.map((pkg, index) => (
                     <div
                       className="col-lg-4 col-md-6 mb-md-0 mb-3"
-                      key={pkg._id}
+                      key={index}
                     >
                       <div className="pricing">
                         <div className="pricingHeader">
