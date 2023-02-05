@@ -169,10 +169,11 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
         },
         data: imageData,
       });
-      console.log("status", res.status);
-      console.log(res);
+      // console.log("status", res.status);
+      // console.log(res);
       if (res.status === 200) {
-        setImages(res.data.images);
+        const images = res.data.images.map(i => API_PATH + i)
+        setImages(images);
         toast(res.data.message, toastConstant);
       }
     } catch (error) {
