@@ -14,7 +14,7 @@ const Notificaiton = () => {
     getNotification();
     setInterval(() => {
       getNotification();
-    }, 5000);
+    }, 50000);
   }, []);
   const getNotification = async () => {
     const { data: notif, status } = await client("/api/notification");

@@ -41,7 +41,7 @@ const Register = () => {
       password,
     };
     dispatch(registerUser(data)).then((request) => {
-      toast("👤 User Created!", {
+      toast("👤 Registration success!", {
         ...toastConstant,
         onClose: () => {
           Navigate("/");

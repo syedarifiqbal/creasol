@@ -7,6 +7,7 @@ export const toastConstant = {
   draggable: true,
   progress: undefined,
   theme: "light",
+  type: 'success'
 };
 
 export const stateConstants = {
