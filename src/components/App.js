@@ -30,6 +30,7 @@ import PostListing from "./Pages/Posts/PostListing";
 import AddPost from "./Pages/Posts/AddPost";
 import EditPost from "./Pages/Posts/EditPost";
 import Notificaiton from "./Pages/Notification/Notification";
+import SubscribedPackages from "./Pages/Packages/SubscribedPackages";
 
 // import { useSelector } from "react-redux";
 
@@ -135,6 +136,12 @@ function App({ user }) {
             <Route
               path={"/notifications"}
               element={!isloggedIn ? <Navigate to="/" /> : <Notificaiton />}
+            />
+            <Route
+              path={"/subscribed-packages"}
+              element={
+                !isloggedIn ? <Navigate to="/" /> : <SubscribedPackages />
+              }
             />
             {/* MainLayout Screens */}
           </Route>

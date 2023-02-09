@@ -2,8 +2,31 @@ import ChartImageTwo from "assets/images/chart-2.png";
 import DotOne from "assets/images/dot-1.png";
 import DotTwo from "assets/images/dot-2.png";
 import DotThree from "assets/images/dot-3.png";
+import { async } from "q";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { client } from "utils/utils";
 
 const UserDashboard = () => {
+  const [packagesSubscribed, setPackagesSubscribed] = useState();
+  const [approvedPosts, setApprovedPosts] = useState();
+  const [pendingPost, setPendingPost] = useState();
+  useEffect(() => {
+    getUserDashboard();
+  }, []);
+  const getUserDashboard = async () => {
+    const { status, data } = await client("/api/user-dashboard");
+    if (status === 200) {
+      setPackagesSubscribed(data.subscribedPackages.toString());
+      setApprovedPosts(data.approvedPosts.toString());
+      setPendingPost(data.pendingPosts.toString());
+    } else {
+      setPackagesSubscribed("0");
+      setApprovedPosts("0");
+      setPendingPost("0");
+      toast("An error occured!");
+    }
+  };
   return (
     <section id="configuration" className="dashboard">
       <div className="row">
@@ -23,7 +46,9 @@ const UserDashboard = () => {
                         </div>
                         <div className="dashboardPackageBody">
                           <h3 className="fs-35 text-dark fw-bold mb-0 ff-helve">
-                            08
+                            {packagesSubscribed
+                              ? packagesSubscribed
+                              : "Loading..."}
                           </h3>
                         </div>
                       </div>
@@ -37,7 +62,7 @@ const UserDashboard = () => {
                         </div>
                         <div className="dashboardPackageBody">
                           <h3 className="fs-35 text-dark fw-bold mb-0 ff-helve">
-                            08
+                            {approvedPosts ? approvedPosts : "Loading..."}
                           </h3>
                         </div>
                       </div>
@@ -51,7 +76,7 @@ const UserDashboard = () => {
                         </div>
                         <div className="dashboardPackageBody">
                           <h3 className="fs-35 text-dark fw-bold mb-0 ff-helve">
-                            12
+                            {pendingPost ? pendingPost : "Loading..."}
                           </h3>
                         </div>
                       </div>

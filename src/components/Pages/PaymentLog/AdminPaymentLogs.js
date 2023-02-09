@@ -6,6 +6,7 @@ import Chart from "assets/images/chart.png";
 import { client } from "utils/utils";
 import { useSelector } from "react-redux";
 import { userSelector } from "features/auth/authSlice";
+import { Link } from "react-router-dom";
 
 const AdminPaymentLogs = () => {
   const [payments, setPayments] = useState();
@@ -287,7 +288,15 @@ const AdminPaymentLogs = () => {
                             payments.map((payment) => (
                               <tr key={payment._id}>
                                 <td>{payment._id}</td>
-                                <td>{payment.order._id}</td>
+                                <td>
+                                  {payment.order._id + "  "}
+                                  <Link
+                                    to={`/posts/${payment.order._id}`}
+                                    className="status active"
+                                  >
+                                    View
+                                  </Link>
+                                </td>
                                 <td>
                                   {isAdmin
                                     ? payment.user.email

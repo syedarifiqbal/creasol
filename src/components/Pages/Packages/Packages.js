@@ -6,7 +6,7 @@ import { STRIPE_PK } from "constants";
 import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 import { toast } from "react-toastify";
 import { client } from "utils/utils";
@@ -70,12 +70,12 @@ const Packages = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <h2 className="mb-0">Packages</h2>
                     {!isAdmin && (
-                      <a
-                        href="subscribed-packages.php"
+                      <Link
+                        to="/subscribed-packages"
                         className="fs-22 fw-bold text-purple text-decoration-underline"
                       >
                         Subscribed Packages
-                      </a>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -85,10 +85,7 @@ const Packages = () => {
               {/* <PaymentModal show={modalShow} handleClose={handleClose} /> */}
               {packages
                 ? packages.map((pkg, index) => (
-                    <div
-                      className="col-lg-4 col-md-6 mb-md-0 mb-3"
-                      key={index}
-                    >
+                    <div className="col-lg-4 col-md-6 mb-md-0 mb-3" key={index}>
                       <div className="pricing">
                         <div className="pricingHeader">
                           <h6 className="fs-20 fw-semibold ff-rubik text-dark">
