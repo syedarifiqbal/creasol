@@ -5,29 +5,14 @@ import { STRIPE_PK } from "constants";
 // import IconThree from "assets/images/icon-3.png";
 import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 import { toast } from "react-toastify";
 import { client } from "utils/utils";
-import { loadStripe } from "@stripe/stripe-js";
-import { useStripe, useElements, Elements } from "@stripe/react-stripe-js";
-import { API_PATH } from "constants";
-import CheckoutForm from "./CheckoutForm";
 
 const Packages = () => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [stripePromise, setStripePromise] = useState(null);
-  const [clientSecret, setClientSecret] = useState("");
-
   const [packages, setPackages] = useState(null);
-  const [paymentModal, setPaymentModal] = useState({
-    packageIndex: 0,
-    show: false,
-    recurring: false,
-  });
   const { user } = useSelector(userSelector);
   const isAdmin = user && user.is_admin;
   const email = user && user.email;
@@ -39,28 +24,7 @@ const Packages = () => {
         res.data.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
       );
     });
-    loadStripeConfig();
   }, []);
-
-  const loadStripeConfig = async () => {
-    const response = await fetch(`${API_PATH}/api/stripe-config`, {
-      headers: { "Content-Type": "application/json" },
-    });
-    const { publishableKey } = await response.json();
-    setStripePromise(loadStripe(publishableKey));
-  };
-
-  const loadClientSecret = async () => {
-    const response = await fetch(`${API_PATH}/api/create-payment-intent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: [{ id: packages[paymentModal.packageIndex].name }],
-      }),
-    });
-    const { clientSecret } = await response.json();
-    setClientSecret(clientSecret);
-  };
 
   const HandleClick = (e) => {
     e.preventDefault();
@@ -70,13 +34,29 @@ const Packages = () => {
     }
   };
 
-  const openModal = async (e, index) => {
-    await loadClientSecret();
-    setPaymentModal({ ...paymentModal, packageIndex: index, show: true });
-  };
-
-  const handleClose = () => {
-    setPaymentModal({ ...paymentModal, show: false });
+  const handleToken = (token, pkg) => {
+    debugger;
+    const body = {
+      stripe_token: token,
+      pkg,
+    };
+    return client("/api/payment", {
+      method: "POST",
+      data: body,
+    })
+      .then((response) => {
+        console.log(response);
+        const { status, data } = response;
+        if (status === 201) {
+          toast("Order has been created.", toastConstant);
+          Navigate(`/posts/${data._id}`);
+        }
+        console.log("STATUS ", status);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast("An error occurred.", toastConstant);
+      });
   };
 
   return (
@@ -90,12 +70,12 @@ const Packages = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <h2 className="mb-0">Packages</h2>
                     {!isAdmin && (
-                      <Link
-                        to="/subscribed-packages"
+                      <a
+                        href="subscribed-packages.php"
                         className="fs-22 fw-bold text-purple text-decoration-underline"
                       >
                         Subscribed Packages
-                      </Link>
+                      </a>
                     )}
                   </div>
                 </div>
@@ -105,8 +85,10 @@ const Packages = () => {
               {/* <PaymentModal show={modalShow} handleClose={handleClose} /> */}
               {packages
                 ? packages.map((pkg, index) => (
-                    <div className="col-lg-4 col-md-6 mb-md-0 mb-3" key={index}>
-                      {console.log("index", index)}
+                    <div
+                      className="col-lg-4 col-md-6 mb-md-0 mb-3"
+                      key={index}
+                    >
                       <div className="pricing">
                         <div className="pricingHeader">
                           <h6 className="fs-20 fw-semibold ff-rubik text-dark">
@@ -130,22 +112,18 @@ const Packages = () => {
                               Edit
                             </button>
                           ) : (
-                            <></>
-                            // <StripeCheckout
-                            //   stripeKey={STRIPE_PK}
-                            //   token={(token) => handleToken(token, pkg)}
-                            //   amount={pkg.price * 100}
-                            //   name={pkg.name}
-                            //   email={email}
-                            // >
-                            //   <button className="btn btn-primary px-5">
-                            //     Pay Now
-                            //   </button>
-                            // </StripeCheckout>
+                            <StripeCheckout
+                              stripeKey={STRIPE_PK}
+                              token={(token) => handleToken(token, pkg)}
+                              amount={pkg.price * 100}
+                              name={pkg.name}
+                              email={email}
+                            >
+                              <button className="btn btn-primary px-5">
+                                Pay Now
+                              </button>
+                            </StripeCheckout>
                           )}
-                          <button onClick={(e) => openModal(e, index)}>
-                            now pay
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -155,27 +133,6 @@ const Packages = () => {
           </div>
         </div>
       </div>
-      <Modal
-        show={paymentModal.show}
-        onHide={handleClose}
-        className="modal-dialog"
-        centered
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title></Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {stripePromise && clientSecret && (
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm />
-            </Elements>
-          )}
-        </Modal.Body>
-        {/* <Modal.Footer>
-          
-        </Modal.Footer> */}
-      </Modal>
     </section>
   );
 };

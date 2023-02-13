@@ -15,7 +15,7 @@ const Login = () => {
     if (email && password) {
       dispatch(loginUser({ email, password }));
     } else {
-      toast("Please fill email & password");
+      toast("Please fill email & password", { type: 'error' });
     }
   };
   return (
