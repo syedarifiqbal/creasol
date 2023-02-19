@@ -31,6 +31,9 @@ import AddPost from "./Pages/Posts/AddPost";
 import EditPost from "./Pages/Posts/EditPost";
 import Notificaiton from "./Pages/Notification/Notification";
 import SubscribedPackages from "./Pages/Packages/SubscribedPackages";
+import EditUserProfile from "./Pages/Users/EditUserProfile";
+import FormListing from "./Pages/Forms/FormListing";
+import Form from "./Pages/Forms/Form";
 
 // import { useSelector } from "react-redux";
 
@@ -142,6 +145,18 @@ function App({ user }) {
               element={
                 !isloggedIn ? <Navigate to="/" /> : <SubscribedPackages />
               }
+            />
+            <Route
+              path={"/user/:id?"}
+              element={!isloggedIn ? <Navigate to="/" /> : <EditUserProfile />}
+            />
+            <Route
+              path={"/forms"}
+              element={!isloggedIn ? <Navigate to="/" /> : <FormListing />}
+            />
+            <Route
+              path={"/form/:OrderId?"}
+              element={!isloggedIn ? <Navigate to="/" /> : <Form />}
             />
             {/* MainLayout Screens */}
           </Route>

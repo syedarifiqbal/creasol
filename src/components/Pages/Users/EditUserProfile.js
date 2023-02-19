@@ -6,35 +6,47 @@ import Avatar from "assets/images/avatar.png";
 import { toastConstant } from "constants";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoginDetails, userSelector } from "features/auth/authSlice";
-const UserProfile = () => {
+import { useNavigate, useParams } from "react-router-dom";
+const EditUserProfile = () => {
   // const [file, setFile] = useState();
   // const [fileName, setFileName] = useState("");
+  const { id: UserToGetId } = useParams();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState("");
+  const [fetchedUser, setFetchedUser] = useState({});
   const [profileImage, setProfileImage] = useState();
   const fileUploaderRef = useRef(null);
   const profileImageRef = useRef(null);
 
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const auth = useSelector(userSelector);
-
   const user = { ...auth.user };
+  const isAdmin = user && user.is_admin;
 
   useEffect(() => {
-    user.email && setEmail(user.email);
-    user.first_name &&
-      user.last_name &&
-      setName(user.first_name + " " + user.last_name);
-    setProfileImage(user.image);
-    user.image && (profileImageRef.current.src = user.image);
-  }, [user.email, user.first_name, user.last_name, user.image]);
+    if (!isAdmin) navigate("/");
+    client("/api/user/" + UserToGetId).then(({ status, data: FetchedUser }) => {
+      setFetchedUser(FetchedUser);
+      setName(FetchedUser.first_name + " " + FetchedUser.last_name);
+      setEmail(FetchedUser.email);
+      setPhone(FetchedUser.phone);
+      setStatus(FetchedUser.status ? "Active" : "Inactive");
+      const profileImageURL =
+        API_PATH + FetchedUser.image + "?" + new Date().getTime();
+      profileImageRef.current.src = profileImageURL;
+    });
+  }, [UserToGetId, isAdmin, navigate]);
 
   const onFileUploaderChange = (e) => {
     const imageData = new FormData();
     // console.log(e.target.files[0].arrayBuffer());
+    imageData.append("user_id", fetchedUser._id);
     imageData.append("profile", e.target.files[0], e.target.files[0].name);
-    client("/api/profile-image", {
+    client("/api/change-user-image-by-admin", {
       method: "PUT",
       headers: {
         "Content-Type": "multipart/form-data",
@@ -44,15 +56,7 @@ const UserProfile = () => {
       if (res.status === 202) {
         const profileImageURL =
           API_PATH + res.data.image + "?" + new Date().getTime();
-        // setProfileImage(profileImageURL);
-        console.log(profileImageURL);
         profileImageRef.current.src = profileImageURL;
-        dispatch(
-          setLoginDetails({
-            ...user,
-            image: res.data.image + "?" + new Date().getTime(),
-          })
-        );
         toast("Profile image changed successfully.", { ...toastConstant });
       } else {
         toast("Image upload unsuccessful.", { ...toastConstant });
@@ -67,16 +71,37 @@ const UserProfile = () => {
     splittedName.splice(0, 1);
     const last_name = splittedName.join(" ");
     if (name && email) {
-      client("/api/users", {
+      client("/api/users-edited-admin", {
         method: "PUT",
-        data: { first_name, last_name },
+        data: {
+          user_id: fetchedUser._id,
+          first_name,
+          last_name,
+          email,
+          phone,
+          status: status === "Active" ? true : false,
+        },
       }).then((res) => {
         if (res.status === 202) {
-          dispatch(setLoginDetails(res.data.user));
+          toast(res.data.message, toastConstant);
         }
       });
     } else {
       toast("Kindly fill all required fields", { ...toastConstant });
+    }
+  };
+
+  const onSendResetLink = (e) => {
+    e.preventDefault();
+    if (email) {
+      client("/api/forget-password", {
+        method: "POST",
+        data: {
+          email,
+        },
+      }).then((res) => {
+        if (res.status === 200) toast(res.data.message, toastConstant);
+      });
     }
   };
 
@@ -86,7 +111,7 @@ const UserProfile = () => {
         <div className="page-title mb-4">
           <div className="row">
             <div className="col-12 col-lg-12">
-              <h2>Edit your profile</h2>
+              <h2>User Profile</h2>
             </div>
           </div>
         </div>
@@ -148,8 +173,40 @@ const UserProfile = () => {
                     placeholder="Email"
                     value={email}
                     // readOnly={true}
-                    onChange={(e) => setEmail(email)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
+                </div>
+              </div>
+              <div className="row form-group">
+                <div className="col-12 col-lg-10 col-xl-6">
+                  <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                    Phone #
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Email"
+                    value={phone}
+                    // readOnly={true}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="row form-group">
+                <div className="col-12 col-lg-10 col-xl-6">
+                  <label className="fs-14 fw-medium text-dark ms-4 ff-helve-normal">
+                    Status
+                  </label>
+                  <select
+                    className="form-control border bg-white"
+                    aria-label="Default select example"
+                    value={status}
+                    // readOnly={true}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
                 </div>
               </div>
 
@@ -162,12 +219,13 @@ const UserProfile = () => {
                     >
                       Save
                     </button>
-                    {/* <a
-                      href="change-password.php"
+                    <a
+                      href="#"
                       className="fs-16 fw-bold text-purple ff-helve text-decoration-underline"
+                      onClick={onSendResetLink}
                     >
-                      Change Password
-                    </a> */}
+                      Send link to reset password
+                    </a>
                   </div>
                 </div>
               </div>
@@ -179,4 +237,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default EditUserProfile;

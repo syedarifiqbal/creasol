@@ -76,7 +76,7 @@ const Users = () => {
                       </td>
                       <td>
                         <Link
-                          to="/users"
+                          to={`/user/${user._id}`}
                           className="text-purple text-decoration-underline fw-semibold"
                         >
                           Click to Edit

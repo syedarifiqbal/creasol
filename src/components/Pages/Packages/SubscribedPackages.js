@@ -12,27 +12,27 @@ const SubscribedPackages = () => {
     });
   }, []);
   return (
-    <section id="user_page" class="user-page">
-      <div class="content-body">
-        <div class="page-title mb-4">
-          <div class="row">
-            <div class="col-12">
+    <section id="user_page" className="user-page">
+      <div className="content-body">
+        <div className="page-title mb-4">
+          <div className="row">
+            <div className="col-12">
               <h2>Subscribed Packages</h2>
             </div>
           </div>
         </div>
-        <div class="dataTables_wrapper">
-          <div class="main-tabble table-responsive mx-n2">
-            <table class="table table-borderless dataTable px-2">
+        <div className="dataTables_wrapper">
+          <div className="main-tabble table-responsive mx-n2">
+            <table className="table table-borderless dataTable px-2">
               <thead>
                 <tr>
-                  <th class="sorting">Package Name</th>
-                  <th class="sorting">Package Status</th>
-                  {/* <th class="sorting">Start Date</th>
-                  <th class="sorting">End Date</th> */}
-                  <th class="sorting">Form Status</th>
-                  <th class="sorting">Type</th>
-                  <th class="sorting">Actions</th>
+                  <th className="sorting">Package Name</th>
+                  <th className="sorting">Package Status</th>
+                  {/* <th className="sorting">Start Date</th>
+                  <th className="sorting">End Date</th> */}
+                  <th className="sorting">Form Status</th>
+                  <th className="sorting">Type</th>
+                  <th className="sorting">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,7 +45,7 @@ const SubscribedPackages = () => {
                       <td>{order.payment_type}</td>
                       <td>
                         {order.payment_type !== "Non Recurrent" ? (
-                          <Link class="text-purple">
+                          <Link className="text-purple">
                             Cancel Recurring Payment
                           </Link>
                         ) : (

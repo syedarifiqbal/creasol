@@ -4,6 +4,7 @@ import DotTwo from "assets/images/dot-2.png";
 import DotThree from "assets/images/dot-3.png";
 import { async } from "q";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { client } from "utils/utils";
 
@@ -11,6 +12,7 @@ const UserDashboard = () => {
   const [packagesSubscribed, setPackagesSubscribed] = useState();
   const [approvedPosts, setApprovedPosts] = useState();
   const [pendingPost, setPendingPost] = useState();
+  const [recentPosts, setRecentPosts] = useState([]);
   useEffect(() => {
     getUserDashboard();
   }, []);
@@ -20,6 +22,7 @@ const UserDashboard = () => {
       setPackagesSubscribed(data.subscribedPackages.toString());
       setApprovedPosts(data.approvedPosts.toString());
       setPendingPost(data.pendingPosts.toString());
+      setRecentPosts(data.recentPosts);
     } else {
       setPackagesSubscribed("0");
       setApprovedPosts("0");
@@ -97,12 +100,12 @@ const UserDashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <a
-                    href="#"
+                  <Link
+                    to="/forms"
                     className="fs-20 fw-bold text-purple text-decoration-underline"
                   >
                     Click to Complete Form Now!
-                  </a>
+                  </Link>
                 </div>
                 <div className="col-lg-4">
                   <h6 className="fs-16 fw-medium ff-helve text-dark text-center mb-3">
@@ -172,62 +175,28 @@ const UserDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>12</td>
-                          <td>Geographic Regions</td>
-                          <td>Neque porro quisquam est qui dolorem</td>
-                          <td>Facebook</td>
-                          <td>
-                            Posted{" "}
-                            <a
-                              href="#"
-                              className="fs-16 ff-helve-normal text-green"
-                            >
-                              (View)
-                            </a>
-                          </td>
-                          <td>
-                            <span className="status active">View</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>13</td>
-                          <td>Major Disasters</td>
-                          <td>Neque porro quisquam est qui dolorem</td>
-                          <td>Facebook</td>
-                          <td>
-                            Pending Approval{" "}
-                            <a
-                              href="#"
-                              className="fs-16 ff-helve-normal text-green"
-                            >
-                              (View)
-                            </a>
-                          </td>
-                          <td>
-                            <span className="status active">View</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>14</td>
-                          <td>Major Tremors</td>
-                          <td>Neque porro quisquam est qui dolorem</td>
-                          <td>Facebook</td>
-                          <td>In Process</td>
-                          <td>
-                            <span className="status active">View</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>15</td>
-                          <td>Major Tremors</td>
-                          <td>Neque porro quisquam est qui dolorem</td>
-                          <td>Facebook</td>
-                          <td>Rejected with Comments</td>
-                          <td>
-                            <span className="status active">View</span>
-                          </td>
-                        </tr>
+                        {recentPosts.length ? (
+                          recentPosts.map((post) => (
+                            <tr key={post._id}>
+                              <td>{post._id}</td>
+                              <td>{post.title}</td>
+                              <td>{post.description}</td>
+                              <td>{post.post_medium}</td>
+                              <td>{post.status}</td>
+                              <td>
+                                <Link
+                                  to={`/post/edit/${post.order}/${post._id}`}
+                                >
+                                  <span className="status active">View</span>
+                                </Link>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="10">No post found.</td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
