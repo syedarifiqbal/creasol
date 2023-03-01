@@ -143,8 +143,11 @@ const Packages = () => {
                             //   </button>
                             // </StripeCheckout>
                           )}
-                          <button onClick={(e) => openModal(e, index)}>
-                            now pay
+                          <button
+                            className="btn btn-primary px-5"
+                            onClick={(e) => openModal(e, index)}
+                          >
+                            Pay Now
                           </button>
                         </div>
                       </div>

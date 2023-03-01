@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { client } from "utils/utils";
+import FormListingAdmin from "./FormListingAdmin";
+import FormTable from "./FormTable";
 
 const FormListing = () => {
   let { user } = useSelector(userSelector);
@@ -12,41 +14,44 @@ const FormListing = () => {
   useEffect(() => {
     client("/api/orders?perPage=50000000").then((res) => {
       const { data } = res;
-      console.log(data);
       setOrders(data);
     });
   }, []);
 
-  const OrderList = () => {
-    // if (isAdmin) {
-    return orders ? (
-      orders.data.map((order) => (
-        <tr key={order._id}>
-          <td>{order._id}</td>
-          <td>{order.pkg_name}</td>
-          <td>{order.medium}</td>
-          <td>{order.form_status}</td>
-          <td>32:43:00</td>
-          <td>
-            <Link to={`/form/${order._id}`}>
-              {order.form_status === "Not Submitted" ? (
-                <span className="status canceled">Fill</span>
-              ) : (
-                <span className="status active">View</span>
-              )}
-            </Link>
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan="10">Loading...</td>
-      </tr>
-    );
-    // }
-  };
+  // const OrderList = ({ orderData }) => {
+  //   // if (isAdmin) {
+  //   return orderData ? (
+  //     orderData.data.map((order) => (
+  //       <tr key={order._id}>
+  //         <td>{order._id}</td>
+  //         <td>{order.pkg_name}</td>
+  //         <td>{order.medium}</td>
+  //         <td>{order.form_status}</td>
+  //         <td>32:43:00</td>
+  //         <td>
+  //           {order.form_status === "Not Submitted" ? (
+  //             <Link to={`/form/${order._id}`}>
+  //               <span className="status canceled">Fill</span>
+  //             </Link>
+  //           ) : (
+  //             <Link to={`/view/form/${order._id}`}>
+  //               <span className="status active">View</span>
+  //             </Link>
+  //           )}
+  //         </td>
+  //       </tr>
+  //     ))
+  //   ) : (
+  //     <tr>
+  //       <td colSpan="10">Loading...</td>
+  //     </tr>
+  //   );
+  //   // }
+  // };
 
-  return (
+  return isAdmin ? (
+    <FormListingAdmin Orders={orders} />
+  ) : (
     <section id="user_page" className="user-page">
       <div className="content-body">
         <div className="page-title mb-4">
@@ -58,32 +63,7 @@ const FormListing = () => {
         </div>
         <div className="dataTables_wrapper">
           <div className="main-tabble table-responsive mx-n2">
-            <table className="table table-borderless dataTable px-2">
-              <thead>
-                {isAdmin ? (
-                  <tr>
-                    <th className="sorting">Order ID</th>
-                    <th className="sorting">Package Name</th>
-                    <th className="sorting">Medium</th>
-                    <th className="sorting">Form Status</th>
-                    <th className="sorting">Time Left</th>
-                    <th className="sorting">Action</th>
-                  </tr>
-                ) : (
-                  <tr>
-                    <th className="sorting">Order ID</th>
-                    <th className="sorting">Package Name</th>
-                    <th className="sorting">Medium</th>
-                    <th className="sorting">Form Status</th>
-                    <th className="sorting">Time Left</th>
-                    <th className="sorting">Action</th>
-                  </tr>
-                )}
-              </thead>
-              <tbody>
-                <OrderList />
-              </tbody>
-            </table>
+            <FormTable Orders={orders} />
           </div>
         </div>
       </div>
