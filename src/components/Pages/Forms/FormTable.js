@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { timer } from "utils/utils";
 
 const FormTable = ({ Orders, Filter = "", isAdmin = false }) => {
+  const interval = useRef();
+  useEffect(() => {
+    interval.current = setInterval(() => {
+      Array.from(document.querySelectorAll("[data-time]")).forEach((td) => {
+        const endTime = new Date(td.getAttribute("data-time"));
+        const timerObject = timer(new Date(), endTime);
+        td.innerHTML = timerObject.status
+          ? timerObject.hours +
+            " : " +
+            timerObject.minutes +
+            " : " +
+            timerObject.seconds
+          : timerObject.message;
+      });
+    }, 1000);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, []);
+
   const OrderList = () => {
     if (Orders) {
       const o =
@@ -18,7 +39,7 @@ const FormTable = ({ Orders, Filter = "", isAdmin = false }) => {
           <td>{order.pkg_name}</td>
           <td>{order.medium}</td>
           <td>{order.form_status}</td>
-          <td>32:43:00</td>
+          <td data-time={order.form_filltime}></td>
           <td>
             {order.form_status === "Not Submitted" ? (
               !isAdmin ? (
