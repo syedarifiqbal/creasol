@@ -35,7 +35,6 @@ const Packages = () => {
   };
 
   const handleToken = (token, pkg) => {
-    debugger;
     const body = {
       stripe_token: token,
       pkg,

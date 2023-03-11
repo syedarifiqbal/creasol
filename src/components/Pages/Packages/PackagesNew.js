@@ -7,7 +7,7 @@ import { userSelector } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 import { toast } from "react-toastify";
 import { client } from "utils/utils";
@@ -20,13 +20,9 @@ const Packages = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [stripePromise, setStripePromise] = useState(null);
-  const [clientSecret, setClientSecret] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [clientSecret, setClientSecret] = useState('');
 
   const [packages, setPackages] = useState(null);
-  const [activeSubscriptions, setActiveSubscriptions] = useState([]);
-  const [successMessage, setSuccessMessage] = useState("");
-  
   const [paymentModal, setPaymentModal] = useState({
     packageIndex: 0,
     show: false,
@@ -46,75 +42,21 @@ const Packages = () => {
     loadStripeConfig();
   }, []);
 
-  useEffect(() => {
-    loadSubscriptions()
-  }, []);
-
-  useEffect(() => {
-    const redirectStatus = searchParams.get("redirect_status");
-
-    if ('succeeded' !== redirectStatus) {
-      return
-    }
-
-    setTimeout(() => {
-      createOrder();
-    }, 2000);
-
-    // console.log(paymentIntent, paymentIntentClientSecret, redirectStatus);
-  }, []);
-
-  const loadSubscriptions = async () => {
-    const {data} = await client("/api/subscriptions")
-    setActiveSubscriptions(data);
-  }
-
-  const createOrder = async () => {
-
-    const paymentIntent = searchParams.get("payment_intent");
-    const paymentIntentClientSecret = searchParams.get("payment_intent_client_secret");
-
-    try {
-      const res = await client("/api/order/create", {
-        method: "POST",
-        data: {
-          product: packages[paymentModal.packageIndex],
-          paymentIntent, 
-          paymentIntentClientSecret, 
-        },
-      })
-      console.log(res);
-      searchParams.delete('payment_intent');
-      searchParams.delete('payment_intent_client_secret');
-      searchParams.delete('redirect_status');
-      setSearchParams(searchParams);
-      setSuccessMessage("Payment Success!")
-      setTimeout(() => setSuccessMessage(""), 3000);
-    } catch (error) {
-      alert('something went wrong!');
-    }
-  }
-
   const loadStripeConfig = async () => {
-    const response = await fetch(`${API_PATH}/api/stripe-config`, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(`${API_PATH}/api/stripe-config`, { headers: { "Content-Type": "application/json" } });
     const { publishableKey } = await response.json();
     setStripePromise(loadStripe(publishableKey));
-  };
+  }
 
   const loadClientSecret = async () => {
     const response = await fetch(`${API_PATH}/api/create-payment-intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        packageID: packages[paymentModal.packageIndex]._id,
-        items: [{ id: packages[paymentModal.packageIndex].name }],
-      }),
+      body: JSON.stringify({ items: [{ id: packages[paymentModal.packageIndex].name }] }),
     });
     const { clientSecret } = await response.json();
-    setClientSecret(clientSecret);
-  };
+    setClientSecret(clientSecret)
+  }
 
   const HandleClick = (e) => {
     e.preventDefault();
@@ -124,29 +66,17 @@ const Packages = () => {
     }
   };
 
-  const unSubscribe = async (subscriptionID) => {
-    const {data} = await client('/api/order/unsubscribe', {
-      method: "POST",
-      data: {subscriptionID}
-    })
-
-    loadSubscriptions();
-  }
-
   const openModal = async (e, index) => {
     await loadClientSecret();
-    setPaymentModal({ ...paymentModal, packageIndex: index, show: true });
-  };
+    setPaymentModal({ ...paymentModal, packageIndex: index, show: true })
+  }
 
   const handleClose = () => {
     setPaymentModal({ ...paymentModal, show: false });
-  };
+  }
 
   return (
     <section id="configuration" className="dashboard">
-      {successMessage && <div className="alert alert-success">
-        {successMessage}
-      </div>}
       <div className="row">
         <div className="col-12">
           <div className="content-body">
@@ -156,12 +86,12 @@ const Packages = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <h2 className="mb-0">Packages</h2>
                     {!isAdmin && (
-                      <Link
-                        to="/subscribed-packages"
+                      <a
+                        href="subscribed-packages.php"
                         className="fs-22 fw-bold text-purple text-decoration-underline"
                       >
                         Subscribed Packages
-                      </Link>
+                      </a>
                     )}
                   </div>
                 </div>
@@ -171,8 +101,10 @@ const Packages = () => {
               {/* <PaymentModal show={modalShow} handleClose={handleClose} /> */}
               {packages
                 ? packages.map((pkg, index) => (
-                  <div className="col-lg-4 col-md-6 mb-md-0 mb-3" key={index}>
-                    {console.log("index", index)}
+                  <div
+                    className="col-lg-4 col-md-6 mb-md-0 mb-3"
+                    key={index}
+                  >{console.log('index', index)}
                     <div className="pricing">
                       <div className="pricingHeader">
                         <h6 className="fs-20 fw-semibold ff-rubik text-dark">
@@ -196,22 +128,19 @@ const Packages = () => {
                             Edit
                           </button>
                         ) : (
-                          <></>
-                          // <StripeCheckout
-                          //   stripeKey={STRIPE_PK}
-                          //   token={(token) => handleToken(token, pkg)}
-                          //   amount={pkg.price * 100}
-                          //   name={pkg.name}
-                          //   email={email}
-                          // >
-                          //   <button className="btn btn-primary px-5">
-                          //     Pay Now
-                          //   </button>
-                          // </StripeCheckout>
+                          <StripeCheckout
+                            stripeKey={STRIPE_PK}
+                            token={(token) => handleToken(token, pkg)}
+                            amount={pkg.price * 100}
+                            name={pkg.name}
+                            email={email}
+                          >
+                            <button className="btn btn-primary px-5">
+                              Pay Now
+                            </button>
+                          </StripeCheckout>
                         )}
-                        {activeSubscriptions.filter(s => s.package === pkg._id).length > 0 
-                          ? <button type="button" onClick={e => unSubscribe(activeSubscriptions.filter(s => s.package === pkg._id)[0]._id)} className="btn btn-primary">UnSubscribe</button> 
-                          : <button onClick={(e) => openModal(e, index)} className="btn btn-primary">Pay Now</button>}
+                        <button onClick={e => openModal(e, index)}>now pay</button>
                       </div>
                     </div>
                   </div>
@@ -221,28 +150,14 @@ const Packages = () => {
           </div>
         </div>
       </div>
-      <Modal
-        show={paymentModal.show}
-        onHide={handleClose}
-        className="modal-dialog"
-        centered
-        size="lg"
-      >
+      <Modal show={paymentModal.show} onHide={handleClose} className="modal-dialog" centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {stripePromise && clientSecret && (
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm packageID={packages[paymentModal.packageIndex]._id} onSuccess={e => {
-                setPaymentModal({
-                  ...paymentModal,
-                  show: false,
-                });
-                loadSubscriptions();
-              }} />
-            </Elements>
-          )}
+          {stripePromise && clientSecret && <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <CheckoutForm />
+          </Elements>}
         </Modal.Body>
         {/* <Modal.Footer>
           

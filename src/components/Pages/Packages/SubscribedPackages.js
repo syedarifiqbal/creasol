@@ -5,12 +5,23 @@ import { client } from "utils/utils";
 const SubscribedPackages = () => {
   const [orders, setOrders] = useState(null);
   useEffect(() => {
-    client("/api/orders?perPage=50000000").then((res) => {
-      const { data } = res;
-      console.log(data);
-      setOrders(data);
-    });
+    loadOrders();
   }, []);
+
+  const loadOrders = async () => {
+    const {data} = await client("/api/orders?perPage=50000000")
+    setOrders(data);
+  }
+
+  const cancelSubscription = async (e, orderID) => {
+    e.preventDefault();
+    const {data} = await client('/api/order/unsubscribe', {
+      method: "POST",
+      data: {orderID}
+    })
+
+    loadOrders();
+  }
   return (
     <section id="user_page" className="user-page">
       <div className="content-body">
@@ -45,9 +56,10 @@ const SubscribedPackages = () => {
                       <td>{order.payment_type}</td>
                       <td>
                         {order.payment_type !== "Non Recurrent" ? (
-                          <Link className="text-purple">
+                          order.subscription_detail.cancel_at_period_end? "Canceled": 
+                          <a href="#" onClick={e => cancelSubscription(e, order._id)} className="text-purple">
                             Cancel Recurring Payment
-                          </Link>
+                          </a>
                         ) : (
                           ""
                         )}
