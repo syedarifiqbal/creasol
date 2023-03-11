@@ -34,6 +34,7 @@ import SubscribedPackages from "./Pages/Packages/SubscribedPackages";
 import EditUserProfile from "./Pages/Users/EditUserProfile";
 import FormListing from "./Pages/Forms/FormListing";
 import Form from "./Pages/Forms/Form";
+import ViewForm from "./Pages/Forms/ViewForm";
 
 // import { useSelector } from "react-redux";
 
@@ -157,6 +158,10 @@ function App({ user }) {
             <Route
               path={"/form/:OrderId?"}
               element={!isloggedIn ? <Navigate to="/" /> : <Form />}
+            />
+            <Route
+              path={"/view/form/:OrderId?"}
+              element={!isloggedIn ? <Navigate to="/" /> : <ViewForm />}
             />
             {/* MainLayout Screens */}
           </Route>

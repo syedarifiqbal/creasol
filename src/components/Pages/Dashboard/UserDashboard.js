@@ -2,19 +2,42 @@ import ChartImageTwo from "assets/images/chart-2.png";
 import DotOne from "assets/images/dot-1.png";
 import DotTwo from "assets/images/dot-2.png";
 import DotThree from "assets/images/dot-3.png";
+import PopularPackageChage from "components/common/PopularPackageChart";
 import { async } from "q";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { client } from "utils/utils";
+import { client, timer } from "utils/utils";
 
 const UserDashboard = () => {
   const [packagesSubscribed, setPackagesSubscribed] = useState();
   const [approvedPosts, setApprovedPosts] = useState();
   const [pendingPost, setPendingPost] = useState();
   const [recentPosts, setRecentPosts] = useState([]);
+  const TimerElem = useRef();
+  const TimerInterval = useRef();
+
+  const ChartDataFunction = (labels, data) => {
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: "Post Status",
+          data: data,
+          backgroundColor: ["#b600ff", "#602080", "#c785e9"],
+          borderColor: ["#b600ff", "#602080", "#c785e9"],
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+  const [chartData, setChartData] = useState(ChartDataFunction([], []));
+
   useEffect(() => {
     getUserDashboard();
+    return () => {
+      clearInterval(TimerInterval.current);
+    };
   }, []);
   const getUserDashboard = async () => {
     const { status, data } = await client("/api/user-dashboard");
@@ -23,6 +46,20 @@ const UserDashboard = () => {
       setApprovedPosts(data.approvedPosts.toString());
       setPendingPost(data.pendingPosts.toString());
       setRecentPosts(data.recentPosts);
+      const LabelsForPieChart = Object.keys(data.chartData);
+      const DataForPieChart = Object.values(data.chartData);
+      setChartData(ChartDataFunction(LabelsForPieChart, DataForPieChart));
+      TimerInterval.current = setInterval(() => {
+        //  new Date(2023, 2, 9, 10, 10, 10)
+        const timerObject = timer(new Date(), new Date(data.timer));
+        TimerElem.current.innerHTML = timerObject.status
+          ? timerObject.hours +
+            " : " +
+            timerObject.minutes +
+            " : " +
+            timerObject.seconds
+          : timerObject.message;
+      }, 1000);
     } else {
       setPackagesSubscribed("0");
       setApprovedPosts("0");
@@ -94,8 +131,11 @@ const UserDashboard = () => {
                         <div className="dashboardPackageBody">
                           <h3
                             className="fs-35 text-dark fw-bold mb-0 ff-helve"
+                            ref={TimerElem}
                             id="demo"
-                          ></h3>
+                          >
+                            Expired
+                          </h3>
                         </div>
                       </div>
                     </div>
@@ -111,12 +151,13 @@ const UserDashboard = () => {
                   <h6 className="fs-16 fw-medium ff-helve text-dark text-center mb-3">
                     Post Ratio
                   </h6>
-                  <img
+                  <PopularPackageChage chartData={chartData} />
+                  {/* <img
                     src={ChartImageTwo}
                     alt=""
                     className="img-fluid w-100 mb-4"
-                  />
-                  <div>
+                  /> */}
+                  {/* <div>
                     <h6 href="#" className="fs-16 text-dark ff-helve fw-bold">
                       Legends:
                     </h6>
@@ -152,7 +193,7 @@ const UserDashboard = () => {
                         </h6>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -26,12 +26,45 @@ const fetchClient = () => {
 export const client = fetchClient();
 
 export const generateArrayOfYears = () => {
-  var max = new Date().getFullYear()
-  var min = max - 2
-  var years = []
+  var max = new Date().getFullYear();
+  var min = max - 2;
+  var years = [];
 
   for (var i = max; i >= min; i--) {
-    years.push(i)
+    years.push(i);
   }
-  return years
-}
+  return years;
+};
+
+export const timer = (start, end) => {
+  // Update the count down every 1 second
+  // var x = setInterval(function () {
+  // Get start date and time
+  var now = start.getTime();
+
+  // Find the distance between now and the end date
+  var distance = end.getTime() - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  // ctrl.innerHTML =
+  //   // days + "d " +
+  //   hours + "h " + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    // clearInterval(x);
+    // ctrl.innerHTML = "EXPIRED";
+    return { status: false, message: "Expired" };
+  }
+  return { hours, minutes, seconds, status: true, message: "Time left" };
+  // }, 1000);
+};
+
+// Set the date we're counting down to
+var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();

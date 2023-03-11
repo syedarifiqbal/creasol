@@ -15,70 +15,97 @@ const AdminDashboard = () => {
 
   const [filter, setFilter] = useState({
     status: undefined,
-    year: (new Date).getFullYear(),
+    year: new Date().getFullYear(),
   });
 
   const [userChart, setUserChart] = useState({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [{
-      label: 'Popular usage',
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 205, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(201, 203, 207, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)',
-        'rgb(255, 159, 64)',
-        'rgb(255, 205, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(54, 162, 235)',
-        'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
-      ],
-      borderWidth: 1
-    }]
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        label: "Popular usage",
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: [
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+        ],
+        borderColor: [
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+          "#602080",
+        ],
+        borderWidth: 1,
+      },
+    ],
   });
 
   const [popularPackageChart, setPopularPackageChart] = useState({
-    labels: ['Package 1', 'Package 2', 'Package 3'],
-    datasets: [{
-      label: 'Popular usage',
-      data: [0, 0, 0],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 205, 86, 0.2)',
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)',
-        'rgb(255, 159, 64)',
-        'rgb(255, 205, 86)',
-      ],
-      borderWidth: 1
-    }],
+    labels: ["Package 1", "Package 2", "Package 3"],
+    datasets: [
+      {
+        label: "Popular usage",
+        data: [0, 0, 0],
+        backgroundColor: ["#b600ff", "#602080", "#c785e9"],
+        borderColor: ["#b600ff", "#602080", "#c785e9"],
+        borderWidth: 1,
+      },
+    ],
   });
 
   const loadDashboardData = async () => {
-    const data = await client("/api/users?top=3")
-    const { data: { graph, packageData } } = await client(`/api/dashboard?year=${filter.year}`)
-    const packageLabels = packageData.map(pkg => pkg._id);
-    const packageCount = packageData.map(pkg => pkg.count);
+    const data = await client("/api/users?top=3");
+    const {
+      data: { graph, packageData },
+    } = await client(`/api/dashboard?year=${filter.year}`);
+    debugger;
+    const packageLabels = packageData.map((pkg) => pkg._id);
+    const packageCount = packageData.map((pkg) => pkg.count);
 
-    setUserChart({ ...userChart, datasets: [{ ...userChart.datasets, data: graph }] })
-    setPopularPackageChart({ ...popularPackageChart, labels: packageLabels, datasets: [{ ...popularPackageChart.datasets, data: packageCount }] })
+    setUserChart({
+      ...userChart,
+      datasets: [{ ...userChart.datasets, data: graph }],
+    });
+    setPopularPackageChart({
+      ...popularPackageChart,
+      labels: packageLabels,
+      datasets: [{ ...popularPackageChart.datasets, data: packageCount }],
+    });
     setUsers(data);
-  }
+  };
 
   useEffect(() => {
-
     loadDashboardData();
-
   }, [filter]);
 
   return (
@@ -91,26 +118,34 @@ const AdminDashboard = () => {
                 <div className="col-lg-8">
                   <div className="d-flex align-items-center justify-content-between mb-4">
                     <h2 className="mb-0">Dashboard</h2>
-                    <a
-                      href="trade-office.php"
+                    <Link
+                      to="/forms"
                       className="fs-16 text-purple fw-bold text-decoration-underline"
                     >
                       View Form Status
-                    </a>
+                    </Link>
                   </div>
                   <div className="d-block d-sm-flex align-items-center justify-content-between mb-4">
                     <h3 className="mb-sm-0 mb-3">No. of users Registered</h3>
                     <div className="">
                       <div className="select-wrapper d-block d-sm-inline-block mt-1 mt-sm-0 me-0 me-sm-2">
-                        <select name="year" value={filter.year} className="form-control" onChange={e => setFilter({ ...filter, year: e.target.value })}>
-                          {generateArrayOfYears().map(year => (<option value={year} >{year}</option>))}
+                        <select
+                          name="year"
+                          value={filter.year}
+                          className="form-control"
+                          onChange={(e) =>
+                            setFilter({ ...filter, year: e.target.value })
+                          }
+                        >
+                          {generateArrayOfYears().map((year) => (
+                            <option value={year}>{year}</option>
+                          ))}
                         </select>
                       </div>
                     </div>
                   </div>
 
                   <UserChart chartData={userChart} />
-
                 </div>
                 <div className="col-lg-4">
                   <h6 className="fs-16 fw-medium ff-helve text-dark text-center mb-3">
