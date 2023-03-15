@@ -36,13 +36,10 @@ import FormListing from "./Pages/Forms/FormListing";
 import Form from "./Pages/Forms/Form";
 import ViewForm from "./Pages/Forms/ViewForm";
 
-// import { useSelector } from "react-redux";
-
 function App({ user }) {
   const [isloggedIn, setIsloggedIn] = useState(null);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
   let authUser = useRef();
   useEffect(() => {
     authUser.current = user;

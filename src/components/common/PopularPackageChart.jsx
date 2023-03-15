@@ -14,6 +14,10 @@ export default function PopularPackageChage({ chartData }) {
           },
           legend: {
             display: true,
+            position: "bottom",
+            labels: {
+              fontSize: 16,
+            },
           },
         },
       }}

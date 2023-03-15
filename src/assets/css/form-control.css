@@ -101,7 +101,7 @@ select {
   font-size: 16px;
   background: #ffffff;
   border: 1px solid #d9d9d9;
-  color: #000000;
+  color: #000000 !important;
   font-weight: 400;
   transition: all 0.6s ease 0s;
   padding: 15px 30px;
@@ -143,7 +143,7 @@ select.form-control {
   background-color: transparent;
   padding: 0 30px 0 30px;
   color: #999999;
-  /* transition: all 0.6s ease 0s; */
+  transition: all 0.6s ease 0s;
   height: 55px !important;
 }
 select option {
@@ -242,24 +242,24 @@ select:focus {
 
 .btn-secondary {
   color: #fff;
-  background: #04d4b4;
-  border-color: #04d4b4;
+  background: #05c954;
+  border-color: #05c954;
 }
 .btn-secondary:hover,
 .btn-secondary:focus,
 .btn-secondary.focus,
 .btn-secondary.active {
   background-color: transparent;
-  color: #04d4b4;
-  border-color: #04d4b4;
+  color: #ff3f00;
+  border-color: #ff3f00;
 }
 
 .btn-secondary:not(:disabled):not(.disabled):active:focus,
 .btn-secondary:not(:disabled):not(.disabled).active,
 .btn-secondary:not(:disabled):not(.disabled):active {
-  color: #04d4b4;
+  color: #ff3f00;
   background-color: transparent;
-  border-color: #04d4b4;
+  border-color: #ff3f00;
   outline: none;
   box-shadow: none;
 }
@@ -319,7 +319,7 @@ select:focus {
   margin-right: 10px;
 }
 .inline-link:hover {
-  color: #04d4b4;
+  color: #ff3f00;
 }
 
 /***** Password Vissible Button *****/

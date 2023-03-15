@@ -30,7 +30,7 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
   useEffect(() => {
     if (!isAdding) {
       client(`/api/post/${PostId}`).then(({ status, data: post }) => {
-        post = { ...post, images: post.images.map(i => API_PATH + i) };
+        post = { ...post, images: post.images.map((i) => API_PATH + i) };
         if (status === 200) {
           setPost(post);
           setComments(post.comments);
@@ -46,13 +46,12 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
   const HandleSubmit = async (e) => {
     setIsLoading(true);
     if (isAdding) {
-
       const data = new FormData();
-      data.append('OrderId', OrderId);
-      data.append('title', title);
-      data.append('description', description);
-      data.append('status', 'Pending Approval');
-      data.append('post_medium', medium);
+      data.append("OrderId", OrderId);
+      data.append("title", title);
+      data.append("description", description);
+      data.append("status", "Pending Approval");
+      data.append("post_medium", medium);
 
       // const data = {
       //   OrderId,
@@ -80,7 +79,7 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
         }
       } catch (error) {
         console.log(error);
-        toast("An error occured!", { ...toastConstant, type: 'error' });
+        toast("An error occured!", { ...toastConstant, type: "error" });
       }
     } else {
       const data = {
@@ -112,7 +111,7 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
       }
     }
     setIsLoading(false);
-    await navigation(-1)
+    await navigation(-1);
   };
 
   const HandleComment = async (e) => {
@@ -151,7 +150,7 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function () {
-          setImages([...images, reader.result])
+          setImages([...images, reader.result]);
         };
       }
       return;
@@ -172,16 +171,16 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
       // console.log("status", res.status);
       // console.log(res);
       if (res.status === 200) {
-        const images = res.data.images.map(i => API_PATH + i)
+        const images = res.data.images.map((i) => API_PATH + i);
         setImages(images);
         toast(res.data.message, toastConstant);
       }
     } catch (error) {
       if (error.response.status === 400) {
-        toast(error.response.data.message, { ...toastConstant, type: 'error' });
+        toast(error.response.data.message, { ...toastConstant, type: "error" });
       } else {
         console.log(error);
-        toast("An error occured", { ...toastConstant, type: 'error' });
+        toast("An error occured", { ...toastConstant, type: "error" });
       }
     }
   };
@@ -235,20 +234,24 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
 
         {images
           ? images.map((image) => (
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
-              <div className="position-relative">
-                <img
-                  src={image}
-                  // src={API_PATH + image}
-                  alt=""
-                  className="img-fluid w-100"
-                />
-                <span href="#" className="deleteBtn">
-                  <i className="fas fa-times"></i>
-                </span>
+              <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-xl-0 mb-3">
+                <div className="position-relative">
+                  <img
+                    src={image}
+                    // src={API_PATH + image}
+                    alt=""
+                    className="img-fluid w-100"
+                  />
+                  {isAdmin ? (
+                    <span href="#" className="deleteBtn">
+                      <i className="fas fa-times"></i>
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-            </div>
-          ))
+            ))
           : ""}
       </div>
       <div className="row mb-3">
@@ -301,8 +304,8 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
             {isLoading
               ? "Sending..."
               : isAdmin
-                ? "Submit for Approval"
-                : "Approve"}
+              ? "Submit for Approval"
+              : "Approve"}
           </button>
         </div>
       </div>
@@ -315,37 +318,37 @@ const AddEditPost = ({ mode, OrderId, PostId }) => {
             </h5>
             {comments.length
               ? comments.map((com) => (
-                <div
-                  className="commentSection d-flex pb-3 mb-3"
-                  key={com._id}
-                >
-                  <div className="commentImg flex-shrink-0 me-3">
-                    <img
-                      src={API_PATH + com.user.image}
-                      alt=""
-                      className="img-fluid"
-                    />
-                  </div>
-                  <div className="commentContect">
-                    <div className="mb-3">
-                      <h6 className="fs-16 fw-bold text-purple">
-                        {com.user.first_name + " " + com.user.last_name}
-                      </h6>
-                      <h6 className="fs-14 fw-medium text-gray">
-                        {format(
-                          new Date(com.createdAt),
-                          "hh:mm a - dd MMMM yyyy"
-                        )}
-                      </h6>
+                  <div
+                    className="commentSection d-flex pb-3 mb-3"
+                    key={com._id}
+                  >
+                    <div className="commentImg flex-shrink-0 me-3">
+                      <img
+                        src={API_PATH + com.user.image}
+                        alt=""
+                        className="img-fluid"
+                      />
                     </div>
-                    <p className="fs-16 fw-medium text-gray mb-0">
-                      {com.text.split("\n").map((value) => (
-                        <span className="d-block">{value}</span>
-                      ))}
-                    </p>
+                    <div className="commentContect">
+                      <div className="mb-3">
+                        <h6 className="fs-16 fw-bold text-purple">
+                          {com.user.first_name + " " + com.user.last_name}
+                        </h6>
+                        <h6 className="fs-14 fw-medium text-gray">
+                          {format(
+                            new Date(com.createdAt),
+                            "hh:mm a - dd MMMM yyyy"
+                          )}
+                        </h6>
+                      </div>
+                      <p className="fs-16 fw-medium text-gray mb-0">
+                        {com.text.split("\n").map((value) => (
+                          <span className="d-block">{value}</span>
+                        ))}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))
               : ""}
             <div className="commentSection d-flex pb-3 mb-3">
               <div className="commentImg flex-shrink-0 me-3">

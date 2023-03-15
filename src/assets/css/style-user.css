@@ -459,6 +459,10 @@ Header Login Navigation
   border: none;
   padding: 7px 25px;
 }
+.notifications-page .card .media-right {
+  display: flex;
+  align-items: center;
+}
 
 /**************
 	User Box

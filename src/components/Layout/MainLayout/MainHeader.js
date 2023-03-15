@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, userSelector } from "features/auth/authSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { client } from "utils/utils";
 import { format } from "date-fns";
 
@@ -17,10 +17,11 @@ const MainHeader = () => {
   const userType = user && (Boolean(user.is_admin) ? "admin" : "user");
   const [notifications, setNotifications] = useState([]);
   const [countOfUnreadNotification, setCountOfUnreadNotification] = useState(0);
+  const GetNotificationIntervalFunc = useRef()
 
   useEffect(() => {
     getNotification();
-    setInterval(() => {
+    GetNotificationIntervalFunc.current = setInterval(() => {
       getNotification();
     }, 5000);
   }, []);
@@ -35,11 +36,12 @@ const MainHeader = () => {
     } else {
       setNotifications([]);
       setCountOfUnreadNotification(0);
+      clearInterval(GetNotificationIntervalFunc.current);
     }
   };
 
   const NotificationLinks = () => {
-    return notifications.map((notification) => {
+    return notifications.length ? notifications.map((notification) => {
       let name, sentence, url, date;
       switch (notification.notification_type) {
         case "Purchase":
@@ -95,13 +97,13 @@ const MainHeader = () => {
                 <time className="date-meta">{date}</time>
               </small>
             </div>
-            <div className="media-left flex-shrink-0 align-self-top">
+            <div className="media-left media-right flex-shrink-0 align-self-top">
               <i className="far fa-circle-dot"></i>{" "}
             </div>
           </div>
         </Link>
       );
-    });
+    }) : '';
   };
 
   return (
@@ -177,7 +179,9 @@ const MainHeader = () => {
                       </PerfectScrollbar>
                     </Dropdown.Item>
                     <li className="dropdown-menu-footer border-top mt-3">
-                      <Dropdown.Item>View all notifications</Dropdown.Item>
+                      <Dropdown.Item href="/notifications">
+                        View all notifications
+                      </Dropdown.Item>
                     </li>
                   </Dropdown.Menu>
                 </Dropdown>

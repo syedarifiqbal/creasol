@@ -116,28 +116,31 @@ const UserDashboard = () => {
                         </div>
                         <div className="dashboardPackageBody">
                           <h3 className="fs-35 text-dark fw-bold mb-0 ff-helve">
-                            {pendingPost ? pendingPost : "Loading..."}
+                            {pendingPost ? <>{pendingPost + ' '} <Link to="/forms" className="fs-16 text-purple ff-helve-normal">View</Link></> : "Loading..."}
+
                           </h3>
                         </div>
                       </div>
                     </div>
                     <div className="col-lg-6">
-                      <div className="dashboardPackageBox text-center">
-                        <div className="dashboardPackageHeader bg-purple3">
-                          <h6 className="fs-16 fw-bold text-white ff-helve mb-0">
-                            Compete Form in
-                          </h6>
+                      <Link to="/forms">
+                        <div className="dashboardPackageBox text-center">
+                          <div className="dashboardPackageHeader bg-purple3">
+                            <h6 className="fs-16 fw-bold text-white ff-helve mb-0">
+                              Compete Form in
+                            </h6>
+                          </div>
+                          <div className="dashboardPackageBody">
+                            <h3
+                              className="fs-35 text-dark fw-bold mb-0 ff-helve"
+                              ref={TimerElem}
+                              id="demo"
+                            >
+                              Expired
+                            </h3>
+                          </div>
                         </div>
-                        <div className="dashboardPackageBody">
-                          <h3
-                            className="fs-35 text-dark fw-bold mb-0 ff-helve"
-                            ref={TimerElem}
-                            id="demo"
-                          >
-                            Expired
-                          </h3>
-                        </div>
-                      </div>
+                      </Link>
                     </div>
                   </div>
                   <Link

@@ -83,7 +83,7 @@ const Notificaiton = () => {
                   </time>
                 </div>
               </div>
-              <div className="media-left flex-shrink-0 align-self-top">
+              <div className="media-left media-right flex-shrink-0 align-self-top">
                 <i className="far fa-circle-dot"></i>{" "}
               </div>
             </div>
